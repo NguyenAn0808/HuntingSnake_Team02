@@ -35,7 +35,7 @@ void DrawBoard(int x, int y, int Width, int Heigh);
 void DrawSnake(const string& s);
 void CleanOldPosition(void);
 
-bool isValid(int x, int y);
+bool isValidFood(int x, int y);
 void GenerateFood(void);
 void EatFood(void);
 
