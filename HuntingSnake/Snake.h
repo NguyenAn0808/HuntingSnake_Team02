@@ -14,6 +14,7 @@ using namespace std;
 const int MAX_SIZE_FOOD = 4;
 const int MAX_SIZE_SNAKE = 26;
 const int MAX_SPEED = 5;
+const int MAX_SIZE_OBS = 10;
 
 const int WIDTH_CONSOLE = 100, HEIGH_CONSOLE = 20;
 
@@ -33,14 +34,20 @@ void ResetData(void);
 
 void DrawBoard(int x, int y, int Width, int Heigh);
 void DrawSnake(const string& s);
+void DrawFood(void);
+void DrawObs(void);
 void CleanOldPosition(void);
 
 bool isValidFood(int x, int y);
 void GenerateFood(void);
 void EatFood(void);
 
+bool isValidObs(int x, int y);
+void GenerateObs(void);
+
 void ThreadFunction(void);
 
+bool TouchObs(int x, int y);
 bool TouchWall(int x, int y);
 bool TouchItself(void);
 

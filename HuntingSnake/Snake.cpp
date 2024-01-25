@@ -5,6 +5,7 @@ mt19937_64 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 Point Snake[MAX_SIZE_SNAKE];
 Point Food[MAX_SIZE_FOOD];
+Point Obs[MAX_SIZE_OBS];
 
 string str[MAX_SIZE_SNAKE];
 
@@ -13,6 +14,7 @@ int Snake_Size;
 int STATE;
 int SPEED;
 int ID_Food;
+int ID_Obs;
 
 char CHAR_LOCK;
 char MOVING;
@@ -72,6 +74,7 @@ void ResetData()
 	Snake[5] = { Init - 5, Init };
 
 	GenerateFood();
+	GenerateObs();
 }
 
 void DrawBoard(int x, int y, int Width, int Heigh)
@@ -121,6 +124,15 @@ void DrawFood()
 	cout << "O";
 	text_color(0, 7);
 }
+
+void DrawObs()
+{
+	GotoXY(Obs[ID_Obs].x, Obs[ID_Obs].y);
+	text_color(0, 5);
+	cout << "U";
+	text_color(0, 8);
+}
+
 void CleanOldPosition()
 {
 	for (int i = 0; i < Snake_Size; i++)
@@ -172,7 +184,39 @@ void EatFood()
 	else
 	{
 		ID_Food++;
+		ID_Obs++;
 		Snake_Size++;
+	}
+}
+
+bool isValidObs(int x, int y)
+{
+	for (int i = 0; i < ID_Food; i++)
+	{
+		if (Food[i].x == x && Food[i].y)
+			return false;
+	}
+
+	for (int i = 0; i < Snake_Size; i++)
+	{
+		if (Snake[i].x == x && Snake[i].y == y)
+			return false;
+	}
+
+	return true;
+}
+
+void GenerateObs(void)
+{
+	int x, y;
+	for (int i = 0; i < MAX_SIZE_OBS; i++)
+	{
+		do
+		{
+			x = Random(1, WIDTH_CONSOLE - 1);
+			y = Random(1, HEIGH_CONSOLE - 1);
+		} while (isValidObs(x, y) == false);
+		Obs[i] = { x, y };
 	}
 }
 
@@ -260,8 +304,20 @@ void ThreadFunction(void)
 
 		DrawSnake(MSSV);
 		DrawFood();
+		DrawObs();
 		Sleep(100 / (SPEED - addTime));
 	}
+}
+
+bool TouchObs()
+{
+	for (int i = 0; i < MAX_SIZE_OBS; i++)
+	{
+		if (Snake[0].x == Obs[i].x && Snake[0].y == Obs[i].y)
+				return true;
+	}
+
+	return false;
 }
 
 bool TouchWall(int x, int y)
@@ -293,7 +349,7 @@ void MoveUp()
 
 	Snake[0].y--;
 
-	if (TouchItself())
+	if (TouchItself() || TouchObs())
 	{
 		ProcessDead();
 		return;
@@ -315,7 +371,7 @@ void MoveDown()
 
 	Snake[0].y++;
 
-	if (TouchItself())
+	if (TouchItself() || TouchObs())
 	{
 		ProcessDead();
 		return;
@@ -337,7 +393,7 @@ void MoveRight()
 
 	Snake[0].x++;
 
-	if (TouchItself())
+	if (TouchItself() || TouchObs())
 	{
 		ProcessDead();
 		return;
@@ -359,7 +415,7 @@ void MoveLeft()
 
 	Snake[0].x--;
 
-	if (TouchItself())
+	if (TouchItself() || TouchObs())
 	{
 		ProcessDead();
 		return;

@@ -3,7 +3,7 @@
 
 int main()
 {
-	LoadConsole();
+	//LoadConsole();
 	StartGame();
 	LoadGame();
 	return 0;
