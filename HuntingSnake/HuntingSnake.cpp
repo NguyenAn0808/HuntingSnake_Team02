@@ -6,6 +6,6 @@ int main()
 	LoadConsole();
 	StartGame();
 	LoadGame();
-	
+	cout << "123";
 	return 0;
 }
