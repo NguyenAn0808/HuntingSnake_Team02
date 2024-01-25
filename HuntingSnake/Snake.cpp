@@ -17,6 +17,8 @@ int ID_Food;
 char CHAR_LOCK;
 char MOVING;
 
+float addTime;
+
 void StartGame()
 {
 	system("cls");
@@ -50,8 +52,10 @@ void ProcessDead()
 	GotoXY(0, HEIGH_CONSOLE + 2);
 	cout << "YOU LOSE";
 }
+
 void ResetData()
 {
+	addTime = 0;
 	SPEED = 1;
 	Snake_Size = 6;
 
@@ -128,7 +132,7 @@ void CleanOldPosition()
 	}
 }
 
-bool isValid(int x, int y)
+bool isValidFood(int x, int y)
 {
 	for (int i = 0; i < Snake_Size; i++)
 	{
@@ -147,11 +151,12 @@ void GenerateFood()
 		{
 			x = Random(1, WIDTH_CONSOLE - 1);
 			y = Random(1, HEIGH_CONSOLE - 1);
-		} while (isValid(x, y) == false);
+		} while (isValidFood(x, y) == false);
 
 		Food[i] = { x, y };
 	}
 }
+
 void EatFood()
 {
 	Snake[Snake_Size] = Food[ID_Food];
@@ -186,6 +191,7 @@ void ThreadFunction(void)
 			{
 				MoveUp();
 				CHAR_LOCK = 'S';
+				addTime = 0.35F;
 				break;
 			}
 
@@ -193,6 +199,7 @@ void ThreadFunction(void)
 			{
 				MoveDown();
 				CHAR_LOCK = 'W';
+				addTime = 0.35F;
 				break;
 			}
 
@@ -200,6 +207,7 @@ void ThreadFunction(void)
 			{
 				MoveLeft();
 				CHAR_LOCK = 'D';
+				addTime = 0;
 				break;
 			}
 
@@ -207,6 +215,7 @@ void ThreadFunction(void)
 			{
 				MoveRight();
 				CHAR_LOCK = 'A';
+				addTime = 0;
 				break;
 			}
 
@@ -216,6 +225,7 @@ void ThreadFunction(void)
 			{
 				MoveUp();
 				CHAR_LOCK = 'P';
+				addTime = 0.35F;
 				break;
 			}
 
@@ -223,6 +233,7 @@ void ThreadFunction(void)
 			{
 				MoveDown();
 				CHAR_LOCK = 'H';
+				addTime = 0.35F;
 				break;
 			}
 
@@ -230,6 +241,7 @@ void ThreadFunction(void)
 			{
 				MoveLeft();
 				CHAR_LOCK = 'M';
+				addTime = 0;
 				break;
 			}
 
@@ -237,6 +249,7 @@ void ThreadFunction(void)
 			{
 				MoveRight();
 				CHAR_LOCK = 'K';
+				addTime = 0;
 				break;
 			}
 
@@ -247,13 +260,13 @@ void ThreadFunction(void)
 
 		DrawSnake(MSSV);
 		DrawFood();
-		Sleep(100 / SPEED);
+		Sleep(100 / (SPEED - addTime));
 	}
 }
 
 bool TouchWall(int x, int y)
 {
-	return !(x >= 0 && x <= WIDTH_CONSOLE && y >= 0 && y <= HEIGH_CONSOLE);
+	return !(x > 0 && x < WIDTH_CONSOLE && y > 0 && y < HEIGH_CONSOLE);
 }
 bool TouchItself()
 {
