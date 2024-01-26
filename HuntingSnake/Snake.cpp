@@ -15,6 +15,7 @@ int STATE;
 int SPEED;
 int ID_Food;
 int ID_Obs;
+int LEVEL;
 
 char CHAR_LOCK;
 char MOVING;
@@ -29,7 +30,6 @@ void StartGame()
 	STATE = 1;
 	DrawSnake(MSSV);
 }
-
 void LoadGame()
 {
 	thread thread_obj(ThreadFunction);
@@ -54,7 +54,6 @@ void ProcessDead()
 	GotoXY(0, HEIGH_CONSOLE + 2);
 	cout << "YOU LOSE";
 }
-
 void ResetData()
 {
 	addTime = 0;
@@ -74,150 +73,7 @@ void ResetData()
 	Snake[5] = { Init - 5, Init };
 
 	GenerateFood();
-	GenerateObs();
-}
-
-void DrawBoard(int x, int y, int Width, int Heigh)
-{
-	GotoXY(x, y);
-	cout << 'X';
-
-	for (int i = 1; i <= Width; i++)
-		cout << 'X';
-
-	GotoXY(x, Heigh + y);
-	cout << 'X';
-
-	for (int i = 1; i <= Width; i++)
-		cout << 'X';
-
-	for (int j = y + 1; j < Heigh + y; j++)
-	{
-		GotoXY(x, j);
-		cout << 'X';
-
-		GotoXY(x + Width, j);
-		cout << 'X';
-	}
-
-	GotoXY(0, 0);
-}
-void DrawSnake(const string& str)
-{
-	GotoXY(Snake[0].x, Snake[0].y);
-	text_color(0, 4);
-	cout << str[0];
-	text_color(0, 7);
-
-	for (int i = 1; i < Snake_Size; i++)
-	{
-		GotoXY(Snake[i].x, Snake[i].y);
-		text_color(0, 10);
-		cout << str[i];
-		text_color(0, 7);
-	}
-}
-void DrawFood()
-{
-	GotoXY(Food[ID_Food].x, Food[ID_Food].y);
-	text_color(0, 10);
-	cout << "O";
-	text_color(0, 7);
-}
-
-void DrawObs()
-{
-	GotoXY(Obs[ID_Obs].x, Obs[ID_Obs].y);
-	text_color(0, 5);
-	cout << "U";
-	text_color(0, 8);
-}
-
-void CleanOldPosition()
-{
-	for (int i = 0; i < Snake_Size; i++)
-	{
-		GotoXY(Snake[i].x, Snake[i].y);
-		text_color(0, 10);
-		cout << " ";
-		text_color(0, 7);
-	}
-}
-
-bool isValidFood(int x, int y)
-{
-	for (int i = 0; i < Snake_Size; i++)
-	{
-		if (Snake[i].x == x && Snake[i].y == y)
-			return false;
-	}
-
-	return true;
-}
-void GenerateFood()
-{
-	int x, y;
-	for (int i = 0; i < MAX_SIZE_FOOD; i++)
-	{
-		do
-		{
-			x = Random(1, WIDTH_CONSOLE - 1);
-			y = Random(1, HEIGH_CONSOLE - 1);
-		} while (isValidFood(x, y) == false);
-
-		Food[i] = { x, y };
-	}
-}
-
-void EatFood()
-{
-	Snake[Snake_Size] = Food[ID_Food];
-
-	if (ID_Food == MAX_SIZE_FOOD - 1)
-	{
-		ID_Food = 0;
-		Snake_Size = 6;
-
-		SPEED = (SPEED == MAX_SPEED - 1 ? 1 : SPEED + 1);
-		GenerateFood();
-	}
-	else
-	{
-		ID_Food++;
-		ID_Obs++;
-		Snake_Size++;
-	}
-}
-
-bool isValidObs(int x, int y)
-{
-	for (int i = 0; i < ID_Food; i++)
-	{
-		if (Food[i].x == x && Food[i].y)
-			return false;
-	}
-
-	for (int i = 0; i < Snake_Size; i++)
-	{
-		if (Snake[i].x == x && Snake[i].y == y)
-			return false;
-	}
-
-	return true;
-}
-
-void GenerateObs(void)
-{
-	int x, y;
-	for (int i = 0; i < MAX_SIZE_OBS; i++)
-	{
-		do
-		{
-			x = Random(1, WIDTH_CONSOLE - 1);
-			y = Random(1, HEIGH_CONSOLE - 1);
-		} while (isValidObs(x, y) == false);
-		Obs[i] = { x, y };
-	}
+	//GenerateObs();
 }
 
 void ThreadFunction(void)
@@ -304,22 +160,289 @@ void ThreadFunction(void)
 
 		DrawSnake(MSSV);
 		DrawFood();
-		DrawObs();
+		//DrawObs();
 		Sleep(100 / (SPEED - addTime));
 	}
 }
 
+void DrawBoard(int x, int y, int Width, int Heigh)
+{
+	GotoXY(x, y);
+	cout << 'X';
+
+	for (int i = 1; i <= Width; i++)
+		cout << 'X';
+
+	GotoXY(x, Heigh + y);
+	cout << 'X';
+
+	for (int i = 1; i <= Width; i++)
+		cout << 'X';
+
+	for (int j = y + 1; j < Heigh + y; j++)
+	{
+		GotoXY(x, j);
+		cout << 'X';
+
+		GotoXY(x + Width, j);
+		cout << 'X';
+	}
+
+	GotoXY(0, 0);
+}
+void DrawSnake(const string& str)
+{
+	GotoXY(Snake[0].x, Snake[0].y);
+	text_color(0, 4);
+	cout << str[0];
+
+	for (int i = 1; i < Snake_Size; i++)
+	{
+		GotoXY(Snake[i].x, Snake[i].y);
+		text_color(0, 10);
+		cout << str[i];
+	}
+}
+void DrawFood()
+{
+	GotoXY(Food[ID_Food].x, Food[ID_Food].y);
+	text_color(0, 10);
+	cout << "O";
+}
+void DrawObs()
+{
+	GotoXY(Obs[ID_Obs].x, Obs[ID_Obs].y);
+	text_color(0, 5);
+	cout << "T";
+}
+void DrawGate(int x, int y)
+{
+	int type = Random(1, 4); 
+
+	switch (type) 
+	{
+		case 1: 
+			DrawGateU1(x, y);
+			break;
+		case 2:
+			DrawGateU2(x, y);
+			break;
+		case 3:
+			DrawGateU3(x, y);
+			break;
+		case 4:
+			DrawGateU4(x, y);
+			break;
+	}
+}
+void DrawGateU1(int x, int y)
+{
+	for (int i = -1; i <= 1; i++)
+	{
+		GotoXY(x + i, y);
+		text_color(0, 4);
+		cout << "o";
+	}
+
+	GotoXY(x - 1, y - 1);
+	text_color(0, 4);
+	cout << "o";
+
+	GotoXY(x + 1, y - 1); 
+	text_color(0, 4);
+	cout << "o";
+}
+void DrawGateU2(int x, int y)
+{
+	for (int i = -1; i <= 1; i++)
+	{
+		GotoXY(x + i, y);
+		text_color(0, 4);
+		cout << "o";
+	}
+
+	GotoXY(x - 1, y + 1);
+	text_color(0, 4);
+	cout << "o";
+
+	GotoXY(x + 1, y + 1);
+	text_color(0, 4);
+	cout << "o";
+}
+void DrawGateU3(int x, int y)
+{
+	for (int i = -1; i <= 1; i++)
+	{
+		GotoXY(x, y + i);
+		text_color(0, 4);
+		cout << "o";
+	}
+
+	GotoXY(x + 1, y - 1); 
+	text_color(0, 4);
+	cout << "o";
+
+	GotoXY(x + 1, y + 1);
+	text_color(0, 4);
+	cout << "o";
+}
+void DrawGateU4(int x, int y)
+{
+	for (int i = -1; i <= 1; i++)
+	{
+		GotoXY(x, y + i);
+		text_color(0, 4);
+		cout << "o";
+	}
+
+	GotoXY(x - 1, y - 1);
+	text_color(0, 4);
+	cout << "o";
+
+	GotoXY(x - 1, y + 1);
+	text_color(0, 4);
+	cout << "o";
+}
+
+void CleanOldPosition()
+{
+	for (int i = 0; i < Snake_Size; i++)
+	{
+		GotoXY(Snake[i].x, Snake[i].y);
+		text_color(0, 10);
+		cout << " ";
+		text_color(0, 7);
+	}
+}
+
+bool isValidFood(int x, int y)
+{
+	for (int i = 0; i < Snake_Size; i++)
+	{
+		if (Snake[i].x == x && Snake[i].y == y)
+			return false;
+	}
+
+	return true;
+}
+void GenerateFood()
+{
+	int x, y;
+	for (int i = 0; i < MAX_SIZE_FOOD; i++)
+	{
+		do
+		{
+			x = Random(1, WIDTH_CONSOLE - 1);
+			y = Random(1, HEIGH_CONSOLE - 1);
+		} while (isValidFood(x, y) == false);
+
+		Food[i] = { x, y };
+	}
+}
+void EatFood()
+{
+	Snake[Snake_Size] = Food[ID_Food];
+	
+	if (ID_Food == MAX_SIZE_FOOD - 1)
+	{
+		Point Center = GenerateCenterGate();
+		DrawGate(Center.x, Center.y);
+		cout << Center.x << " " << Center.y << " " << Snake_Size << '\n';
+
+		if (PassLevel(Center.x, Center.y) == true)
+		{
+			SPEED = (SPEED == MAX_SPEED - 1 ? 1 : SPEED + 1);
+			ID_Food = 0;
+			Snake_Size = 6;
+			LEVEL++;
+		}
+	}
+	else
+	{
+		ID_Food++;
+		ID_Obs++;
+		Snake_Size++;
+		GenerateFood();
+	}
+}
+
+bool isValidObs(int x, int y)
+{
+	for (int i = 0; i < ID_Food; i++)
+	{
+		if (Food[i].x == x && Food[i].y == y)
+			return false;
+	}
+
+	for (int i = 0; i < Snake_Size; i++)
+	{
+		if (Snake[i].x == x && Snake[i].y == y)
+			return false;
+	}
+
+	return true;
+}
+void GenerateObs(void)
+{
+	int x, y;
+	for (int i = 0; i < MAX_SIZE_OBS; i++)
+	{
+		do
+		{
+			x = Random(1, WIDTH_CONSOLE - 1);
+			y = Random(1, HEIGH_CONSOLE - 1);
+		} while (isValidObs(x, y) == false);
+		Obs[i] = { x, y };
+	}
+}
+Point GenerateCenterGate()
+{
+	int x, y;
+	do
+	{
+		x = Random(1, WIDTH_CONSOLE - 1);
+		y = Random(1, HEIGH_CONSOLE - 1);
+	} while (CenterGate(x, y) == false);
+
+	return { x, y };
+}
+
+int dx[] = { -1, 0, 0, 1, -1, -1, 1, 1 };
+int dy[] = { 0, -1, 1, 0, -1, 1, -1, 1 };
+// Check matrix 3 * 3 with center (x, y)
+bool CenterGate(int x, int y)
+{
+	for (int dir = 0; dir < 8; dir++)
+	{
+		int new_x = x + dx[dir];
+		int new_y = y + dy[dir];
+
+		if (TouchWall(new_x, new_y) == true)
+			return false;
+
+		if (isValidFood(new_x, new_y) == false)
+			return false;
+
+		if (isValidObs(new_x, new_y) == false)
+			return false;
+	}
+	
+	return true;
+}
+bool PassLevel(int x, int y)
+{
+	return (Snake[Snake_Size].x == x && Snake[Snake_Size].y == y);
+}
 bool TouchObs()
 {
 	for (int i = 0; i < MAX_SIZE_OBS; i++)
 	{
 		if (Snake[0].x == Obs[i].x && Snake[0].y == Obs[i].y)
-				return true;
+			return true;
 	}
 
 	return false;
 }
-
 bool TouchWall(int x, int y)
 {
 	return !(x > 0 && x < WIDTH_CONSOLE && y > 0 && y < HEIGH_CONSOLE);
