@@ -3,9 +3,8 @@
 
 int main()
 {
-	mainMenu();
-//	StartGame();
-//	LoadGame();
-	
+	//LoadConsole();
+	StartGame();
+	LoadGame();
 	return 0;
 }

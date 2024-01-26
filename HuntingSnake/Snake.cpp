@@ -5,6 +5,7 @@ mt19937_64 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 Point Snake[MAX_SIZE_SNAKE];
 Point Food[MAX_SIZE_FOOD];
+Point Obs[MAX_SIZE_OBS];
 
 string str[MAX_SIZE_SNAKE];
 
@@ -13,9 +14,13 @@ int Snake_Size;
 int STATE;
 int SPEED;
 int ID_Food;
+int ID_Obs;
+int LEVEL;
 
 char CHAR_LOCK;
 char MOVING;
+
+float addTime;
 
 void StartGame()
 {
@@ -25,7 +30,6 @@ void StartGame()
 	STATE = 1;
 	DrawSnake(MSSV);
 }
-
 void LoadGame()
 {
 	thread thread_obj(ThreadFunction);
@@ -52,6 +56,7 @@ void ProcessDead()
 }
 void ResetData()
 {
+	addTime = 0;
 	SPEED = 1;
 	Snake_Size = 6;
 
@@ -68,6 +73,96 @@ void ResetData()
 	Snake[5] = { Init - 5, Init };
 
 	GenerateFood();
+	//GenerateObs();
+}
+
+void ThreadFunction(void)
+{
+	while (true)
+	{
+		if (STATE == 1)
+		{
+			CleanOldPosition();
+			switch (MOVING)
+			{
+				// WASD Key
+
+			case 'W':
+			{
+				MoveUp();
+				CHAR_LOCK = 'S';
+				addTime = 0.35F;
+				break;
+			}
+
+			case 'S':
+			{
+				MoveDown();
+				CHAR_LOCK = 'W';
+				addTime = 0.35F;
+				break;
+			}
+
+			case 'A':
+			{
+				MoveLeft();
+				CHAR_LOCK = 'D';
+				addTime = 0;
+				break;
+			}
+
+			case 'D':
+			{
+				MoveRight();
+				CHAR_LOCK = 'A';
+				addTime = 0;
+				break;
+			}
+
+
+			// Arrow Key
+			case 'H':
+			{
+				MoveUp();
+				CHAR_LOCK = 'P';
+				addTime = 0.35F;
+				break;
+			}
+
+			case 'P':
+			{
+				MoveDown();
+				CHAR_LOCK = 'H';
+				addTime = 0.35F;
+				break;
+			}
+
+			case 'K':
+			{
+				MoveLeft();
+				CHAR_LOCK = 'M';
+				addTime = 0;
+				break;
+			}
+
+			case 'M':
+			{
+				MoveRight();
+				CHAR_LOCK = 'K';
+				addTime = 0;
+				break;
+			}
+
+			default:
+				break;
+			}
+		}
+
+		DrawSnake(MSSV);
+		DrawFood();
+		//DrawObs();
+		Sleep(100 / (SPEED - addTime));
+	}
 }
 
 void DrawBoard(int x, int y, int Width, int Heigh)
@@ -100,14 +195,12 @@ void DrawSnake(const string& str)
 	GotoXY(Snake[0].x, Snake[0].y);
 	text_color(0, 4);
 	cout << str[0];
-	text_color(0, 7);
 
 	for (int i = 1; i < Snake_Size; i++)
 	{
 		GotoXY(Snake[i].x, Snake[i].y);
 		text_color(0, 10);
 		cout << str[i];
-		text_color(0, 7);
 	}
 }
 void DrawFood()
@@ -115,8 +208,102 @@ void DrawFood()
 	GotoXY(Food[ID_Food].x, Food[ID_Food].y);
 	text_color(0, 10);
 	cout << "O";
-	text_color(0, 7);
 }
+void DrawObs()
+{
+	GotoXY(Obs[ID_Obs].x, Obs[ID_Obs].y);
+	text_color(0, 5);
+	cout << "T";
+}
+void DrawGate(int x, int y)
+{
+	int type = Random(1, 4); 
+
+	switch (type) 
+	{
+		case 1: 
+			DrawGateU1(x, y);
+			break;
+		case 2:
+			DrawGateU2(x, y);
+			break;
+		case 3:
+			DrawGateU3(x, y);
+			break;
+		case 4:
+			DrawGateU4(x, y);
+			break;
+	}
+}
+void DrawGateU1(int x, int y)
+{
+	for (int i = -1; i <= 1; i++)
+	{
+		GotoXY(x + i, y);
+		text_color(0, 4);
+		cout << "o";
+	}
+
+	GotoXY(x - 1, y - 1);
+	text_color(0, 4);
+	cout << "o";
+
+	GotoXY(x + 1, y - 1); 
+	text_color(0, 4);
+	cout << "o";
+}
+void DrawGateU2(int x, int y)
+{
+	for (int i = -1; i <= 1; i++)
+	{
+		GotoXY(x + i, y);
+		text_color(0, 4);
+		cout << "o";
+	}
+
+	GotoXY(x - 1, y + 1);
+	text_color(0, 4);
+	cout << "o";
+
+	GotoXY(x + 1, y + 1);
+	text_color(0, 4);
+	cout << "o";
+}
+void DrawGateU3(int x, int y)
+{
+	for (int i = -1; i <= 1; i++)
+	{
+		GotoXY(x, y + i);
+		text_color(0, 4);
+		cout << "o";
+	}
+
+	GotoXY(x + 1, y - 1); 
+	text_color(0, 4);
+	cout << "o";
+
+	GotoXY(x + 1, y + 1);
+	text_color(0, 4);
+	cout << "o";
+}
+void DrawGateU4(int x, int y)
+{
+	for (int i = -1; i <= 1; i++)
+	{
+		GotoXY(x, y + i);
+		text_color(0, 4);
+		cout << "o";
+	}
+
+	GotoXY(x - 1, y - 1);
+	text_color(0, 4);
+	cout << "o";
+
+	GotoXY(x - 1, y + 1);
+	text_color(0, 4);
+	cout << "o";
+}
+
 void CleanOldPosition()
 {
 	for (int i = 0; i < Snake_Size; i++)
@@ -128,7 +315,7 @@ void CleanOldPosition()
 	}
 }
 
-bool isValid(int x, int y)
+bool isValidFood(int x, int y)
 {
 	for (int i = 0; i < Snake_Size; i++)
 	{
@@ -147,7 +334,7 @@ void GenerateFood()
 		{
 			x = Random(1, WIDTH_CONSOLE - 1);
 			y = Random(1, HEIGH_CONSOLE - 1);
-		} while (isValid(x, y) == false);
+		} while (isValidFood(x, y) == false);
 
 		Food[i] = { x, y };
 	}
@@ -155,105 +342,110 @@ void GenerateFood()
 void EatFood()
 {
 	Snake[Snake_Size] = Food[ID_Food];
-
+	
 	if (ID_Food == MAX_SIZE_FOOD - 1)
 	{
-		ID_Food = 0;
-		Snake_Size = 6;
+		Point Center = GenerateCenterGate();
+		DrawGate(Center.x, Center.y);
+		cout << Center.x << " " << Center.y << " " << Snake_Size << '\n';
 
-		SPEED = (SPEED == MAX_SPEED - 1 ? 1 : SPEED + 1);
-		GenerateFood();
+		if (PassLevel(Center.x, Center.y) == true)
+		{
+			SPEED = (SPEED == MAX_SPEED - 1 ? 1 : SPEED + 1);
+			ID_Food = 0;
+			Snake_Size = 6;
+			LEVEL++;
+		}
 	}
 	else
 	{
 		ID_Food++;
+		ID_Obs++;
 		Snake_Size++;
+		GenerateFood();
 	}
 }
 
-void ThreadFunction(void)
+bool isValidObs(int x, int y)
 {
-	while (true)
+	for (int i = 0; i < ID_Food; i++)
 	{
-		if (STATE == 1)
+		if (Food[i].x == x && Food[i].y == y)
+			return false;
+	}
+
+	for (int i = 0; i < Snake_Size; i++)
+	{
+		if (Snake[i].x == x && Snake[i].y == y)
+			return false;
+	}
+
+	return true;
+}
+void GenerateObs(void)
+{
+	int x, y;
+	for (int i = 0; i < MAX_SIZE_OBS; i++)
+	{
+		do
 		{
-			CleanOldPosition();
-			switch (MOVING)
-			{
-				// WASD Key
-
-			case 'W':
-			{
-				MoveUp();
-				CHAR_LOCK = 'S';
-				break;
-			}
-
-			case 'S':
-			{
-				MoveDown();
-				CHAR_LOCK = 'W';
-				break;
-			}
-
-			case 'A':
-			{
-				MoveLeft();
-				CHAR_LOCK = 'D';
-				break;
-			}
-
-			case 'D':
-			{
-				MoveRight();
-				CHAR_LOCK = 'A';
-				break;
-			}
-
-
-			// Arrow Key
-			case 'H':
-			{
-				MoveUp();
-				CHAR_LOCK = 'P';
-				break;
-			}
-
-			case 'P':
-			{
-				MoveDown();
-				CHAR_LOCK = 'H';
-				break;
-			}
-
-			case 'K':
-			{
-				MoveLeft();
-				CHAR_LOCK = 'M';
-				break;
-			}
-
-			case 'M':
-			{
-				MoveRight();
-				CHAR_LOCK = 'K';
-				break;
-			}
-
-			default:
-				break;
-			}
-		}
-
-		DrawSnake(MSSV);
-		DrawFood();
-		Sleep(100 / SPEED);
+			x = Random(1, WIDTH_CONSOLE - 1);
+			y = Random(1, HEIGH_CONSOLE - 1);
+		} while (isValidObs(x, y) == false);
+		Obs[i] = { x, y };
 	}
 }
+Point GenerateCenterGate()
+{
+	int x, y;
+	do
+	{
+		x = Random(1, WIDTH_CONSOLE - 1);
+		y = Random(1, HEIGH_CONSOLE - 1);
+	} while (CenterGate(x, y) == false);
 
+	return { x, y };
+}
+
+int dx[] = { -1, 0, 0, 1, -1, -1, 1, 1 };
+int dy[] = { 0, -1, 1, 0, -1, 1, -1, 1 };
+// Check matrix 3 * 3 with center (x, y)
+bool CenterGate(int x, int y)
+{
+	for (int dir = 0; dir < 8; dir++)
+	{
+		int new_x = x + dx[dir];
+		int new_y = y + dy[dir];
+
+		if (TouchWall(new_x, new_y) == true)
+			return false;
+
+		if (isValidFood(new_x, new_y) == false)
+			return false;
+
+		if (isValidObs(new_x, new_y) == false)
+			return false;
+	}
+	
+	return true;
+}
+bool PassLevel(int x, int y)
+{
+	return (Snake[Snake_Size].x == x && Snake[Snake_Size].y == y);
+}
+bool TouchObs()
+{
+	for (int i = 0; i < MAX_SIZE_OBS; i++)
+	{
+		if (Snake[0].x == Obs[i].x && Snake[0].y == Obs[i].y)
+			return true;
+	}
+
+	return false;
+}
 bool TouchWall(int x, int y)
 {
-	return !(x >= 0 && x <= WIDTH_CONSOLE && y >= 0 && y <= HEIGH_CONSOLE);
+	return !(x > 0 && x < WIDTH_CONSOLE && y > 0 && y < HEIGH_CONSOLE);
 }
 bool TouchItself()
 {
@@ -280,7 +472,7 @@ void MoveUp()
 
 	Snake[0].y--;
 
-	if (TouchItself())
+	if (TouchItself() || TouchObs())
 	{
 		ProcessDead();
 		return;
@@ -302,7 +494,7 @@ void MoveDown()
 
 	Snake[0].y++;
 
-	if (TouchItself())
+	if (TouchItself() || TouchObs())
 	{
 		ProcessDead();
 		return;
@@ -324,7 +516,7 @@ void MoveRight()
 
 	Snake[0].x++;
 
-	if (TouchItself())
+	if (TouchItself() || TouchObs())
 	{
 		ProcessDead();
 		return;
@@ -346,7 +538,7 @@ void MoveLeft()
 
 	Snake[0].x--;
 
-	if (TouchItself())
+	if (TouchItself() || TouchObs())
 	{
 		ProcessDead();
 		return;
