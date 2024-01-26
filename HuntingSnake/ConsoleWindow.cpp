@@ -104,3 +104,19 @@ void MaximizeConsoleWindow()
     //set console at maximize size
     ShowWindow(consoleWindow, SW_MAXIMIZE);
 }
+
+void mainMenu() {
+    // define parameters
+    unsigned int x_menu = 50,
+        y_menu = 5,
+        rec_width = 20,
+        rec_height = 4;
+    
+    setBackgroundColor(BG_COLOR);
+    
+    // draw menu
+    draw_rectangle(x_menu, 5, rec_height, rec_width, 5, BG_COLOR, "New Game", 2);
+    draw_rectangle(x_menu, 10, rec_height, rec_width, 4, BG_COLOR, "Load Game", 2);
+    draw_rectangle(x_menu, 15, rec_height, rec_width, 2, BG_COLOR, "Achievements", 2);
+    draw_rectangle(x_menu, 20, rec_height, rec_width, 3, BG_COLOR, "Settings", 2);
+}
