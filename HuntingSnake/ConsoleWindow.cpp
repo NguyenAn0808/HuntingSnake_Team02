@@ -16,3 +16,11 @@ void GotoXY(int x, int y)
 
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 }
+
+void mainMenu()
+{
+	system("cls");
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
+	std::cout << "SNAKE GAME" << std::endl;
+	draw_rec(5, 10, 5, 8, 0);
+}

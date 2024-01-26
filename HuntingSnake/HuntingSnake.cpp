@@ -1,9 +1,11 @@
 #include "Snake.h"
+#include "ConsoleWindow.h"
 
 int main()
 {
-	StartGame();
-	LoadGame();
+	mainMenu();
+//	StartGame();
+//	LoadGame();
 	
 	return 0;
 }
