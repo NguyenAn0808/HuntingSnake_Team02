@@ -129,12 +129,14 @@
   <ItemGroup>
     <ClCompile Include="ConsoleWindow.cpp" />
     <ClCompile Include="GenerateMap.cpp" />
+    <ClCompile Include="graphics.cpp" />
     <ClCompile Include="HuntingSnake.cpp" />
     <ClCompile Include="Snake.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ConsoleWindow.h" />
     <ClInclude Include="GenerateMap.h" />
+    <ClInclude Include="graphics.h" />
     <ClInclude Include="Snake.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

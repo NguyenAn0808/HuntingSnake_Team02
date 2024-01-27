@@ -1,5 +1,8 @@
 #pragma once
 #include <windows.h>
+#include <iostream>
+#include "graphics.h"
+#define BG_COLOR 1
 
 void text_color(int background_color, int text_color);
 
@@ -12,3 +15,5 @@ void ShowScrollbar(BOOL Show);
 void SetConsolePosition(int x, int y);
 void LockConsolePosition();
 void MaximizeConsoleWindow();
+
+void mainMenu();
