@@ -6,6 +6,7 @@ mt19937_64 rng(chrono::steady_clock::now().time_since_epoch().count());
 Point Snake[MAX_SIZE_SNAKE];
 Point Food[MAX_SIZE_FOOD];
 Point Obs[MAX_SIZE_OBS];
+Point Center;
 
 string str[MAX_SIZE_SNAKE];
 
@@ -16,9 +17,12 @@ int SPEED;
 int ID_Food;
 int ID_Obs;
 int LEVEL;
+int TYPE;
 
 char CHAR_LOCK;
 char MOVING;
+
+bool GateDraw;
 
 float addTime;
 
@@ -82,7 +86,7 @@ void ThreadFunction(void)
 	{
 		if (STATE == 1)
 		{
-			CleanOldPosition();
+			EraseOldPosition();
 			switch (MOVING)
 			{
 				// WASD Key
@@ -158,8 +162,8 @@ void ThreadFunction(void)
 			}
 		}
 
+		ProcessGate();
 		DrawSnake(MSSV);
-		DrawFood();
 		//DrawObs();
 		Sleep(100 / (SPEED - addTime));
 	}
@@ -217,94 +221,137 @@ void DrawObs()
 }
 void DrawGate(int x, int y)
 {
-	int type = Random(1, 4); 
+	/*TYPE = Random(1, 4);
 
-	switch (type) 
+	switch (TYPE) 
 	{
 		case 1: 
-			DrawGateU1(x, y);
+			DrawGateU1(x, y, 'o');
 			break;
 		case 2:
-			DrawGateU2(x, y);
+			DrawGateU2(x, y, 'o');
 			break;
 		case 3:
-			DrawGateU3(x, y);
+			DrawGateU3(x, y, 'o');
 			break;
 		case 4:
-			DrawGateU4(x, y);
+			DrawGateU4(x, y, 'o');
 			break;
-	}
+	}*/
+	DrawGateU1(x, y, 'o');
+
+	GateDraw = true;
 }
-void DrawGateU1(int x, int y)
+void DrawGateU1(int x, int y, char ch)
 {
 	for (int i = -1; i <= 1; i++)
 	{
 		GotoXY(x + i, y);
 		text_color(0, 4);
-		cout << "o";
+		cout << ch;
 	}
 
 	GotoXY(x - 1, y - 1);
 	text_color(0, 4);
-	cout << "o";
+	cout << ch;
 
 	GotoXY(x + 1, y - 1); 
 	text_color(0, 4);
-	cout << "o";
+	cout << ch;
 }
-void DrawGateU2(int x, int y)
+void DrawGateU2(int x, int y, char ch)
 {
 	for (int i = -1; i <= 1; i++)
 	{
 		GotoXY(x + i, y);
 		text_color(0, 4);
-		cout << "o";
+		cout << ch;
 	}
 
 	GotoXY(x - 1, y + 1);
 	text_color(0, 4);
-	cout << "o";
+	cout << ch;
 
 	GotoXY(x + 1, y + 1);
 	text_color(0, 4);
-	cout << "o";
+	cout << ch;
 }
-void DrawGateU3(int x, int y)
+void DrawGateU3(int x, int y, char ch)
 {
 	for (int i = -1; i <= 1; i++)
 	{
 		GotoXY(x, y + i);
 		text_color(0, 4);
-		cout << "o";
+		cout << ch;
 	}
 
 	GotoXY(x + 1, y - 1); 
 	text_color(0, 4);
-	cout << "o";
+	cout << ch;
 
 	GotoXY(x + 1, y + 1);
 	text_color(0, 4);
-	cout << "o";
+	cout << ch;
 }
-void DrawGateU4(int x, int y)
+void DrawGateU4(int x, int y, char ch)
 {
 	for (int i = -1; i <= 1; i++)
 	{
 		GotoXY(x, y + i);
 		text_color(0, 4);
-		cout << "o";
+		cout << ch;
 	}
 
 	GotoXY(x - 1, y - 1);
 	text_color(0, 4);
-	cout << "o";
+	cout << ch;
 
 	GotoXY(x - 1, y + 1);
 	text_color(0, 4);
-	cout << "o";
+	cout << ch;
 }
 
-void CleanOldPosition()
+void ProcessGate()
+{
+	if (GateDraw == false)
+	{
+		DrawFood();
+		return;
+	}
+
+	if (Snake[Snake_Size - 1].x == Center.x && Snake[Snake_Size - 1].y == Center.y)
+		Snake_Size--;
+
+	if (Snake_Size == 0)
+	{
+		EraseGate(Center.x, Center.y);
+		GateDraw = false;
+
+		SPEED = (SPEED == MAX_SPEED - 1 ? 1 : SPEED + 1);
+		LEVEL++;
+		Snake_Size = 6;
+	}
+}
+
+void EraseGate(int x, int y)
+{
+	switch (TYPE)
+	{
+	case 1:
+		DrawGateU1(x, y, ' ');
+		break;
+	case 2:
+		DrawGateU2(x, y, ' ');
+		break;
+	case 3:
+		DrawGateU3(x, y, ' ');
+		break;
+	case 4:
+		DrawGateU4(x, y, ' ');
+		break;
+	}
+}
+void EraseOldPosition()
 {
 	for (int i = 0; i < Snake_Size; i++)
 	{
@@ -345,17 +392,8 @@ void EatFood()
 	
 	if (ID_Food == MAX_SIZE_FOOD - 1)
 	{
-		Point Center = GenerateCenterGate();
 		DrawGate(Center.x, Center.y);
-		cout << Center.x << " " << Center.y << " " << Snake_Size << '\n';
-
-		if (PassLevel(Center.x, Center.y) == true)
-		{
-			SPEED = (SPEED == MAX_SPEED - 1 ? 1 : SPEED + 1);
-			ID_Food = 0;
-			Snake_Size = 6;
-			LEVEL++;
-		}
+		ID_Food = 0;
 	}
 	else
 	{
@@ -395,16 +433,16 @@ void GenerateObs(void)
 		Obs[i] = { x, y };
 	}
 }
-Point GenerateCenterGate()
+void GenerateCenterGate()
 {
 	int x, y;
 	do
 	{
-		x = Random(1, WIDTH_CONSOLE - 1);
-		y = Random(1, HEIGH_CONSOLE - 1);
+		x = Random(2, WIDTH_CONSOLE - 2);
+		y = Random(2, HEIGH_CONSOLE - 2);
 	} while (CenterGate(x, y) == false);
 
-	return { x, y };
+	Center = { x, y };
 }
 
 int dx[] = { -1, 0, 0, 1, -1, -1, 1, 1 };
@@ -412,6 +450,9 @@ int dy[] = { 0, -1, 1, 0, -1, 1, -1, 1 };
 // Check matrix 3 * 3 with center (x, y)
 bool CenterGate(int x, int y)
 {
+	if (TouchWall(x, y) == false)
+		return false;
+
 	for (int dir = 0; dir < 8; dir++)
 	{
 		int new_x = x + dx[dir];
@@ -428,10 +469,6 @@ bool CenterGate(int x, int y)
 	}
 	
 	return true;
-}
-bool PassLevel(int x, int y)
-{
-	return (Snake[Snake_Size].x == x && Snake[Snake_Size].y == y);
 }
 bool TouchObs()
 {

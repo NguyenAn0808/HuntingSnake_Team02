@@ -4,9 +4,9 @@
 
 int main()
 {
-	//LoadConsole();
-	//StartGame();
-	//LoadGame();
-	mainMenu();
+	LoadConsole();
+	StartGame();
+	LoadGame();
+	//mainMenu();
 	return 0;
 }

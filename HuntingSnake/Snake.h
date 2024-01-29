@@ -40,12 +40,14 @@ void DrawSnake(const string& s);
 void DrawFood(void);
 void DrawObs(void);
 void DrawGate(int x, int y);
-void DrawGateU1(int x, int y);
-void DrawGateU2(int x, int y);
-void DrawGateU3(int x, int y);
-void DrawGateU4(int x, int y);
+void DrawGateU1(int x, int y, char ch);
+void DrawGateU2(int x, int y, char ch);
+void DrawGateU3(int x, int y, char ch);
+void DrawGateU4(int x, int y, char ch);
 
-void CleanOldPosition(void);
+void ProcessGate(void);
+void EraseGate(int x, int y);
+void EraseOldPosition(void);
 
 bool isValidFood(int x, int y);
 void GenerateFood(void);
@@ -53,10 +55,9 @@ void EatFood(void);
 
 bool isValidObs(int x, int y);
 void GenerateObs(void);
-Point GenerateCenterGate(void);
+void GenerateCenterGate(void);
 
 bool CenterGate(int x, int y);
-bool PassLevel(int x, int y);
 bool TouchObs(void);
 bool TouchWall(int x, int y);
 bool TouchItself(void);
