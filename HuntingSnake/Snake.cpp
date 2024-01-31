@@ -481,7 +481,7 @@ void GenerateCenterGate()
 // 8 directions from point (x, y) 
 int dx[] = { -1, 0, 0, 1, -1, -1, 1, 1 };
 int dy[] = { 0, -1, 1, 0, -1, 1, -1, 1 };
-// Check matrix 3 * 3 with center (x, y)
+
 bool CenterGate(int x, int y)
 {
 	if (TouchWall(x, y) == true)
