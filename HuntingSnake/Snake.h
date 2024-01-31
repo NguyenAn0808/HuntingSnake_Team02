@@ -11,7 +11,7 @@
 
 using namespace std;
 
-const int MAX_SIZE_FOOD = 4;
+const int MAX_SIZE_FOOD = 2;
 const int MAX_SIZE_SNAKE = 26;
 const int MAX_SPEED = 5;
 const int MAX_SIZE_OBS = 10;
@@ -40,10 +40,10 @@ void DrawSnake(const string& s);
 void DrawFood(void);
 void DrawObs(void);
 void DrawGate(int x, int y);
-void DrawGateU1(int x, int y, char ch);
-void DrawGateU2(int x, int y, char ch);
-void DrawGateU3(int x, int y, char ch);
-void DrawGateU4(int x, int y, char ch);
+void DrawGateU1(int x, int y, const string& st);
+void DrawGateU2(int x, int y, const string& st);
+void DrawGateU3(int x, int y, const string& st);
+void DrawGateU4(int x, int y, const string& st);
 
 void ProcessGate(void);
 void EraseGate(int x, int y);
