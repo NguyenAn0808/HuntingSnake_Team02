@@ -4,7 +4,7 @@
 
 int main()
 {
-	LoadConsole();
+	//LoadConsole();
 	StartGame();
 	LoadGame();
 	//mainMenu();

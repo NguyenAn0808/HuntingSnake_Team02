@@ -11,8 +11,8 @@
 
 using namespace std;
 
-const int MAX_SIZE_FOOD = 2;
-const int MAX_SIZE_SNAKE = 26;
+const int MAX_SIZE_FOOD = 4;
+const int MAX_SIZE_SNAKE = 30;
 const int MAX_SPEED = 5;
 const int MAX_SIZE_OBS = 10;
 const int MAX_LEVEL = 5;
@@ -46,7 +46,7 @@ void DrawGateU3(int x, int y, const string& st);
 void DrawGateU4(int x, int y, const string& st);
 
 void ProcessGate(void);
-void EraseGate(int x, int y);
+void EraseGate();
 void EraseOldPosition(void);
 
 bool isValidFood(int x, int y);
@@ -59,6 +59,7 @@ void GenerateCenterGate(void);
 
 bool CenterGate(int x, int y);
 bool TouchObs(void);
+bool TouchGate(void);
 bool TouchWall(int x, int y);
 bool TouchItself(void);
 
