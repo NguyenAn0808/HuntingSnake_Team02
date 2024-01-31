@@ -1,68 +1,73 @@
 #include "Snake.h"
 #include "ConsoleWindow.h"
 
+// Random number generator (rng) object generates seed to random number [0, 2^64 - 1]
 mt19937_64 rng(chrono::steady_clock::now().time_since_epoch().count());
 
-Point Snake[MAX_SIZE_SNAKE];
-Point Food[MAX_SIZE_FOOD];
-Point Obs[MAX_SIZE_OBS];
-Point Center;
-Point Gate[5];
+// Declare Global Variables, Structs
+Point Snake[MAX_SIZE_SNAKE]; // Snake
+Point Food[MAX_SIZE_FOOD]; // Food
+Point Obs[MAX_SIZE_OBS]; // Obstacles
+Point Center; // Center coordinates of Gate
+Point Gate[5]; // Coordinates of Gate
 
-string str[MAX_SIZE_SNAKE];
+string str[MAX_SIZE_SNAKE]; 
 
-int Snake_Size;
+int STATE; // DEAD or ALIVE
+int SPEED; // Current speed (Speed increase with each level)
+int ID_Food; // Current index of food 
+int ID_Obs; // Current index of obstacles 
+int LEVEL = 1; // Current level (Maximum is 5 levels)
+int TYPE; // Type of Gate (4 types directions = 4 types gates)
+int cntGate; // index of coordinates of Gate
+int Snake_Size; // Size of snake, initially 6 units and maximum is 22 units
 
-int STATE;
-int SPEED;
-int ID_Food;
-int ID_Obs;
-int LEVEL = 1;
-int TYPE;
-int cntGate;
+char CHAR_LOCK; // At a moment, there is one direction that snake cannot move to
+char MOVING; // At a moment, there are three directions that snake can move
 
-char CHAR_LOCK;
-char MOVING;
+bool GateDraw; // Gate exist or not
 
-bool GateDraw;
+float addTime; // Control the speed between rows and columns 
+// Speed through rows < speed through columns (number of columns > number of rows)
 
-float addTime;
-float DeltaSpeed = 0;
+float DeltaSpeed = 0; // Control the speed when move to next level
 
 void StartGame()
 {
-	system("cls");
-	ResetData();
-	DrawBoard(0, 0, WIDTH_CONSOLE, HEIGH_CONSOLE);
-	STATE = 1;
-	DrawSnake(MSSV);
+	system("cls"); // Clear screen
+	ResetData(); // Intialize original data
+	DrawBoard(0, 0, WIDTH_CONSOLE, HEIGH_CONSOLE); // Draw board matrix WIDTH * HEIGH with 4 boundaries
+	STATE = 1; // ALIVE (Running thread)
+ 	DrawSnake(MSSV); // Draw snake with MSSV of four members in group
 }
 void LoadGame()
 {
-	thread thread_obj(ThreadFunction);
-	HANDLE handle_thread_obj = thread_obj.native_handle();
+	thread thread_obj(ThreadFunction); // Create thread for snake
+	HANDLE handle_thread_obj = thread_obj.native_handle(); // Take handle of thread
 
 	while (true)
 	{
-		char temp = toupper(_getch());
-		ResumeThread(handle_thread_obj); // > 0
+		char temp = toupper(_getch()); // Get character from the keyboard (including 4 arrows, WASD)
+		ResumeThread(handle_thread_obj); 
 
+		// H, P, M, K -> 4 arrows when transform into characters
 		if ((temp == 'W' || temp == 'S' || temp == 'A' || temp == 'D' ||
 			temp == 'H' || temp == 'P' || temp == 'M' || temp == 'K') && temp != CHAR_LOCK)
 		{
-			MOVING = temp;
+			MOVING = temp; // Next movement of snake
 		}
 	}
 }
 
 void ProcessDead()
 {
-	STATE = 0;
+	STATE = 0; // DEAD
 	GotoXY(0, HEIGH_CONSOLE + 2);
 	cout << "YOU LOSE";
 }
 void ResetData()
 {
+	//Initialize the global variables, structs
 	for (int i = 0; i < cntGate; i++)
 		Gate[i] = { 0, 0 };
 
@@ -74,8 +79,12 @@ void ResetData()
 
 	CHAR_LOCK = 'A';
 	MOVING = 'D';
+	 
+	ID_Food = 0;
 
 	int Init = HEIGH_CONSOLE / 2 + 5;
+
+	//Initialize the coordinates of snake
 
 	Snake[0] = { Init, Init };
 	Snake[1] = { Init - 1, Init };
@@ -84,14 +93,14 @@ void ResetData()
 	Snake[4] = { Init - 4, Init };
 	Snake[5] = { Init - 5, Init };
 
-	GenerateFood();
+	GenerateFood(); // Create food array
 }
 
 void ThreadFunction(void)
 {
 	while (true)
 	{
-		if (STATE == 1)
+		if (STATE == 1) // If snake ALIVE -> continue
 		{
 			EraseOldPosition();
 			switch (MOVING)
@@ -169,10 +178,10 @@ void ThreadFunction(void)
 			}
 		}
 
-		DrawSnake(MSSV);
-		ProcessGate();
+		DrawSnake(MSSV); // After one move, draw new snake because of the change of coordinates
+		ProcessGate(); // Process if meet the conditions to create the gate
 		//DrawObs();
-		Sleep(100 / (SPEED + DeltaSpeed - addTime));
+		Sleep(100 / (SPEED + DeltaSpeed - addTime)); // Sleep function will set the speed of snake
 	}
 }
 
@@ -201,17 +210,18 @@ void DrawBoard(int x, int y, int Width, int Heigh)
 
 	GotoXY(0, 0);
 }
-void DrawSnake(const string& str)
+void DrawSnake(const string& str) // With str is MSSV
 {
+	// Draw head of snake
 	GotoXY(Snake[0].x, Snake[0].y);
-	text_color(0, 4);
+	text_color(0, 4); // Color of head will be different from body
 	cout << str[0];
 
 	for (int i = 1; i < Snake_Size; i++)
 	{
 		GotoXY(Snake[i].x, Snake[i].y);
 		text_color(0, 10);
-		cout << str[i];
+		cout << str[i]; // Draw body of snake
 	}
 }
 void DrawFood()
@@ -228,12 +238,12 @@ void DrawObs()
 }
 void DrawGate(int x, int y)
 {
-	TYPE = Random(1, 4);
+	TYPE = Random(1, 4); // Random 4 types of gates
 
 	switch (TYPE)
 	{
 		case 1:
-			DrawGateU1(x, y, "o");
+			DrawGateU1(x, y, "o"); 
 			break;
 		case 2:
 			DrawGateU2(x, y, "o");
@@ -246,14 +256,14 @@ void DrawGate(int x, int y)
 			break;
 	}
 
-	GateDraw = true;
+	GateDraw = true; // Gate exits
 }
 void DrawGateU1(int x, int y, const string& st)
 {
 	for (int i = -1; i <= 1; i++)
 	{
 		GotoXY(x + i, y);
-		Gate[cntGate++] = { x + i, y };
+		Gate[cntGate++] = { x + i, y }; // Save coordinates of each point from gate to array
 		text_color(0, 4);
 		cout << st;
 	}
@@ -331,19 +341,19 @@ void DrawGateU4(int x, int y, const string &st)
 
 void ProcessGate()
 {
-	if (GateDraw == false)
+	if (GateDraw == false) // If doesn't meet the conditions to create Gate -> continue draw food to eat food 
 	{
-		DrawFood();
+		DrawFood(); // (4 foods each level to create Gate)
 	}
-	else
+	else // Create Gate already
 	{
-		if (TouchGate())
+		if (TouchGate()) // When come into gate and crash it -> DEAD
 		{
 			ProcessDead();
 			return;
 		}
 
-		if (Snake[0].x == Center.x && Snake[0].y == Center.y && Snake_Size > 0)
+		if (Snake[0].x == Center.x && Snake[0].y == Center.y && Snake_Size > 0) // Snake come into gate
 		{
 			for (int i = 0; i < Snake_Size - 1; i++)
 				Snake[i] = Snake[i + 1];
@@ -351,19 +361,19 @@ void ProcessGate()
 			Snake_Size--;
 		}
 
-		if (Snake_Size == 0)
+		if (Snake_Size == 0) // When all the body of snake come into Gate -> Erase Gate and move to next level
 		{
+			// Erase Gate
 			EraseGate();
-			GateDraw = false;
+			GateDraw = false; 
 
-			DeltaSpeed += 0.3F;
-			LEVEL++;
+			DeltaSpeed += 0.3F; // Increase speed when move to next level
+			LEVEL++; // Move to next level
 
-			ResetData();
+			ResetData(); // Intialize original data when move to new level
 		}
 	}
 }
-
 void EraseGate()
 {
 	for (int i = 0; i < cntGate; i++)
@@ -372,7 +382,6 @@ void EraseGate()
 		cout << " ";
 	}
 }
-
 void EraseOldPosition()
 {
 	for (int i = 0; i < Snake_Size; i++)
@@ -401,27 +410,25 @@ void GenerateFood()
 	{
 		do
 		{
-			x = Random(1, WIDTH_CONSOLE - 1);
+			x = Random(1, WIDTH_CONSOLE - 1); 
 			y = Random(1, HEIGH_CONSOLE - 1);
-		} while (isValidFood(x, y) == false);
-
-		Food[i] = { x, y };
+		} while (isValidFood(x, y) == false); // Check if can create food
+		 
+		Food[i] = { x, y }; // Random coordinates of food into array
 	}
 }
 void EatFood()
 {
-	Snake[Snake_Size] = Food[ID_Food];
+	Snake[Snake_Size] = Food[ID_Food]; // Insert new size of body (Insert food coordinates)
 
-	if (ID_Food == MAX_SIZE_FOOD - 1)
+	if (ID_Food == MAX_SIZE_FOOD - 1) // 4 foods can generate Gate
 	{
 		GenerateCenterGate();
-		DrawGate(Center.x, Center.y);
-		ID_Food = 0;
+		DrawGate(Center.x, Center.y); // Draw Gate
 	}
-	else
+	else // Increase size of snake, index of food
 	{
 		ID_Food++;
-		ID_Obs++;
 		Snake_Size++;	
 		GenerateFood();
 	}
@@ -464,11 +471,14 @@ void GenerateCenterGate()
 		x = Random(2, WIDTH_CONSOLE - 2);
 		y = Random(2, HEIGH_CONSOLE - 2);
 	} while (CenterGate(x - 1, y) == false && CenterGate(x, y) == false && CenterGate(x + 1, y) == false 
-		  && CenterGate(x - 1, y + 2) == false && CenterGate(x + 1, y + 2) == false); // Check 5 * 5 matrix (avoid gate opposite the bound)
+		  && CenterGate(x - 1, y + 2) == false && CenterGate(x + 1, y + 2) == false); 
+	// Check 5 * 5 matrix with center is Center Point Of Gate (avoid gate opposite the bound)
+	// It makes sure that there are no Food, Obstacles and Snake in this 5x5 matrix
 
 	Center = { x, y };
 }
 
+// 8 directions from point (x, y) 
 int dx[] = { -1, 0, 0, 1, -1, -1, 1, 1 };
 int dy[] = { 0, -1, 1, 0, -1, 1, -1, 1 };
 // Check matrix 3 * 3 with center (x, y)
@@ -477,9 +487,9 @@ bool CenterGate(int x, int y)
 	if (TouchWall(x, y) == true)
 		return false;
 
-	for (int dir = 0; dir < 8; dir++)
+	for (int dir = 0; dir < 8; dir++) // Check 8 directions from Center Point of Gate (Not food, obstacles, snake, wall)
 	{
-		int new_x = x + dx[dir];
+		int new_x = x + dx[dir]; 
 		int new_y = y + dy[dir];
 
 		if (TouchWall(new_x, new_y) == true)
@@ -535,21 +545,21 @@ bool TouchGate()
 
 void MoveUp()
 {
-	if (TouchWall(Snake[0].x, Snake[0].y - 1) == true)
+	if (TouchWall(Snake[0].x, Snake[0].y - 1) == true) // Touch the Wall -> You lose
 	{
 		ProcessDead();
 		return;
 	}
 
-	if (Snake[0].x == Food[ID_Food].x && Snake[0].y - 1 == Food[ID_Food].y)
+	if (Snake[0].x == Food[ID_Food].x && Snake[0].y - 1 == Food[ID_Food].y) // If move to coordinates of Food -> Eat Food
 		EatFood();
 
-	for (int i = Snake_Size - 2; i >= 0; i--)
+	for (int i = Snake_Size - 2; i >= 0; i--) // Change the coordinates of Snake
 		Snake[i + 1] = Snake[i];
 
-	Snake[0].y--;
+	Snake[0].y--; // Move up
 
-	if (TouchItself() || TouchObs())
+	if (TouchItself() || TouchObs()) // Check conditions to make sure that snake still ALIVE
 	{
 		ProcessDead();
 		return;
@@ -568,8 +578,8 @@ void MoveDown()
 
 	for (int i = Snake_Size - 2; i >= 0; i--)
 		Snake[i + 1] = Snake[i];
-
-	Snake[0].y++;
+	 
+	Snake[0].y++; // Move down
 
 	if (TouchItself() || TouchObs())
 	{
@@ -591,7 +601,7 @@ void MoveRight()
 	for (int i = Snake_Size - 2; i >= 0; i--)
 		Snake[i + 1] = Snake[i];
 
-	Snake[0].x++;
+	Snake[0].x++; // Move right
 
 	if (TouchItself() || TouchObs())
 	{
@@ -613,7 +623,7 @@ void MoveLeft()
 	for (int i = Snake_Size - 2; i >= 0; i--)
 		Snake[i + 1] = Snake[i];
 
-	Snake[0].x--;
+	Snake[0].x--; // Move left
 
 	if (TouchItself() || TouchObs())
 	{

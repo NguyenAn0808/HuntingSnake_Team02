@@ -2,9 +2,10 @@
 #include "ConsoleWindow.h"
 #include "graphics.h"
 
+// MAIN FUNCTION
 int main()
 {
-	//LoadConsole();
+	LoadConsole();
 	StartGame();
 	LoadGame();
 	//mainMenu();
