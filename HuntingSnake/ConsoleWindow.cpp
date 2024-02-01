@@ -1,5 +1,18 @@
 #include "ConsoleWindow.h"
 
+terminalSize getTermSize()
+{
+    terminalSize res;
+
+    // get terminal's size
+    CONSOLE_SCREEN_BUFFER_INFO info;
+    GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &info);
+    res.x = info.srWindow.Right - info.srWindow.Left + 1;
+    res.y = info.srWindow.Bottom - info.srWindow.Top + 1;
+
+    return res;
+}
+
 void text_color(int background_color, int text_color)
 {
 	HANDLE color = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -105,18 +118,82 @@ void MaximizeConsoleWindow()
     ShowWindow(consoleWindow, SW_MAXIMIZE);
 }
 
+void ShowConsoleCursor(bool show)
+{
+    // Reference: https://stackoverflow.com/questions/18028808/remove-blinking-underscore-on-console-cmd-prompt
+    HANDLE out = GetStdHandle(STD_OUTPUT_HANDLE);
+
+    CONSOLE_CURSOR_INFO     cursorInfo;
+
+    GetConsoleCursorInfo(out, &cursorInfo);
+    cursorInfo.bVisible = show; // set the cursor visibility
+    SetConsoleCursorInfo(out, &cursorInfo);
+}
+
 void mainMenu() {
+    // turn off cursor blinking
+    ShowConsoleCursor(false);
     // define parameters
     unsigned int x_menu = 50,
         y_menu = 5,
         rec_width = 20,
         rec_height = 4;
-    
-    setBackgroundColor(BG_COLOR);
-    
+
+    setBackgroundColor(BG_COLOR, TXT_COLOR);
     // draw menu
-    draw_rectangle(x_menu, 5, rec_height, rec_width, 5, BG_COLOR, "New Game", 2);
-    draw_rectangle(x_menu, 10, rec_height, rec_width, 4, BG_COLOR, "Load Game", 2);
-    draw_rectangle(x_menu, 15, rec_height, rec_width, 2, BG_COLOR, "Achievements", 2);
-    draw_rectangle(x_menu, 20, rec_height, rec_width, 3, BG_COLOR, "Settings", 2);
+    draw_rectangle(x_menu, y_menu, rec_height, rec_width, 5, BG_COLOR, "New Game", 6);
+    draw_rectangle(x_menu, y_menu + 5, rec_height, rec_width, 5, BG_COLOR, "Load Game", 6);
+    draw_rectangle(x_menu, y_menu + 10, rec_height, rec_width, 5, BG_COLOR, "Achievements", 6);
+    draw_rectangle(x_menu, y_menu + 15, rec_height, rec_width, 5, BG_COLOR, "Settings", 6);
+
+    unsigned int x_pointer = x_menu, y_pointer = y_menu;
+    unsigned int x_prev = x_menu, y_prev = y_menu;
+    bool check = true;
+    while (true) {
+        GotoXY(x_pointer, y_pointer);
+
+        // highlitght the current option that the user choose
+        if (check) {
+            GotoXY(x_prev, y_prev);
+            highlightedBox(false, x_prev, y_prev, rec_height, rec_width, BG_COLOR, 5);
+            x_prev = x_pointer;
+            y_prev = y_pointer;
+            highlightedBox(true, x_pointer, y_pointer, rec_height, rec_width, BG_COLOR, 6);
+            check = false;
+        }
+
+        // hoover through the menu
+        if (_kbhit()) {
+            check = true;
+            char handle;
+            handle = toupper(_getch());
+            Sleep(50);
+            switch (handle)
+            {
+            case 'S': case 'P':
+                y_pointer += 5;
+                if (y_pointer > y_menu * 4) y_pointer = y_menu;
+                GotoXY(x_pointer, y_pointer);
+                highlightedBox(true, x_pointer, y_pointer, rec_height, rec_width, 5, 5);
+                break;
+            case 'W': case 'H':
+                y_pointer -= 5;
+                if (y_pointer < y_menu) y_pointer = y_menu * 4;
+                GotoXY(x_pointer, y_pointer);
+                highlightedBox(true, x_pointer, y_pointer, rec_height, rec_width, 5, 5);
+                break;
+            case 13:
+                if (y_pointer / y_menu == 1) {
+                    StartGame();
+                    LoadGame();
+                }
+                else {
+                    draw_rectangle(x_menu + rec_width + 1, y_pointer, rec_height, rec_width, 8, BG_COLOR, "Upcomming", 6);
+                }
+                break;
+            default:
+                break;
+            }
+        }
+    }
 }
