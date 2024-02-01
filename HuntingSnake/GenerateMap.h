@@ -26,3 +26,5 @@ void play_match4(unsigned int x_pos, unsigned int y_pos, unsigned int height, un
 
 //void create_obstacle_5(unsigned int x_pos, unsigned int y_pos, unsigned int height, unsigned int width, toado obs[], int& obs_nums);
 void getConsoleSize(int& columns, int& rows);
+
+void LoadMap(void);

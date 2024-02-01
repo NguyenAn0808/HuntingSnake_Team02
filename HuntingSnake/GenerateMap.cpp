@@ -180,3 +180,16 @@ void getConsoleSize(int& columns, int& rows)
 	//printf("columns: %d\n", columns);
 	//printf("rows: %d\n", rows);
 }
+
+void LoadMap()
+{
+	toado* obs;
+	obs = new toado[1000];
+	int obs_nums = 0;
+	toado* const_obs;
+	const_obs = new toado[500];
+	int const_obs_nums = 0;
+	bool up = false;
+	//draw_matchBoard(1, 3, 22, 80);
+	play_match2(1, 3, 23, 80, obs, obs_nums);
+}

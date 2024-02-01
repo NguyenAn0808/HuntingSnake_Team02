@@ -1,4 +1,5 @@
 #include "ConsoleWindow.h"
+#include "GenerateMap.h"
 
 terminalSize getTermSize()
 {
@@ -47,7 +48,7 @@ void LoadConsole()
     MaximizeConsoleWindow();
 
     //Pause the program to watch result
-    system("pause");
+    //system("pause");
 }
 
 void DisableResizeWindow()
@@ -185,6 +186,7 @@ void mainMenu() {
             case 13:
                 if (y_pointer / y_menu == 1) {
                     StartGame();
+                    LoadMap();
                     LoadGame();
                 }
                 else {

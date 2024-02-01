@@ -36,7 +36,6 @@ void StartGame()
 {
 	system("cls"); // Clear screen
 	ResetData(); // Intialize original data
-	DrawBoard(0, 0, WIDTH_CONSOLE, HEIGH_CONSOLE); // Draw board matrix WIDTH * HEIGH with 4 boundaries
 	STATE = 1; // ALIVE (Running thread)
  	DrawSnake(MSSV); // Draw snake with MSSV of four members in group
 }
@@ -185,31 +184,6 @@ void ThreadFunction(void)
 	}
 }
 
-void DrawBoard(int x, int y, int Width, int Heigh)
-{
-	GotoXY(x, y);
-	cout << 'X';
-
-	for (int i = 1; i <= Width; i++)
-		cout << 'X';
-
-	GotoXY(x, Heigh + y);
-	cout << 'X';
-
-	for (int i = 1; i <= Width; i++)
-		cout << 'X';
-
-	for (int j = y + 1; j < Heigh + y; j++)
-	{
-		GotoXY(x, j);
-		cout << 'X';
-
-		GotoXY(x + Width, j);
-		cout << 'X';
-	}
-
-	GotoXY(0, 0);
-}
 void DrawSnake(const string& str) // With str is MSSV
 {
 	// Draw head of snake
