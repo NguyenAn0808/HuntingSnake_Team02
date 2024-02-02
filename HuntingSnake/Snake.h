@@ -13,7 +13,7 @@
 using namespace std;
 
 // CONSTANTS
-const int MAX_SIZE_FOOD = 2;
+const int MAX_SIZE_FOOD = 4;
 const int MAX_SIZE_SNAKE = 30;
 const int MAX_SPEED = 5;
 const int MAX_SIZE_OBS = 10;
