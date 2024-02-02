@@ -4,7 +4,7 @@
 // ___________________________________________________________________MAP 2______________________________________________________________________
 
 // Initialize obstacle for level 2
-void create_obstacle_2(unsigned int x_pos, unsigned int y_pos, unsigned int height, unsigned int width, toado obs[], int& obs_nums) {
+void create_obstacle_2(unsigned int x_pos, unsigned int y_pos, unsigned int height, unsigned int width, Point obs[], int& obs_nums) {
 	int dist = 10;
 	for (int i = x_pos + dist; i <= width - dist; i++) {
 		obs[obs_nums].x = i;
@@ -18,7 +18,7 @@ void create_obstacle_2(unsigned int x_pos, unsigned int y_pos, unsigned int heig
 }
 
 // Generate level 2
-void play_match2(unsigned int x_pos, unsigned int y_pos, unsigned int height, unsigned int width, toado obs[], int obs_nums) {
+void play_match2(unsigned int x_pos, unsigned int y_pos, unsigned int height, unsigned int width, Point obs[], int& obs_nums) {
 	// prepare obstacle for level 2
 	create_obstacle_2(x_pos, y_pos, height, width, obs, obs_nums);
 	// draw match board
@@ -30,7 +30,7 @@ void play_match2(unsigned int x_pos, unsigned int y_pos, unsigned int height, un
 // ___________________________________________________________________MAP 3______________________________________________________________________
 
 // Initialize obstacle for level 3
-void create_obstacle_3(unsigned int x_pos, unsigned int y_pos, unsigned int height, unsigned int width, toado obs[], int& obs_nums) {
+void create_obstacle_3(unsigned int x_pos, unsigned int y_pos, unsigned int height, unsigned int width, Point obs[], int& obs_nums) {
 	int dist = 10;
 	for (int i = x_pos + dist; i <= width - dist; i++) {
 		obs[obs_nums].x = i;
@@ -54,7 +54,7 @@ void create_obstacle_3(unsigned int x_pos, unsigned int y_pos, unsigned int heig
 }
 
 // Generate level 3
-void play_match3(unsigned int x_pos, unsigned int y_pos, unsigned int height, unsigned int width, toado obs[], int obs_nums) {
+void play_match3(unsigned int x_pos, unsigned int y_pos, unsigned int height, unsigned int width, Point obs[], int obs_nums) {
 	// prepare obstacle for level 3
 	create_obstacle_3(x_pos, y_pos, height, width, obs, obs_nums);
 	// draw matchboard
@@ -68,7 +68,7 @@ void play_match3(unsigned int x_pos, unsigned int y_pos, unsigned int height, un
 // ___________________________________________________________________MAP 4______________________________________________________________________
 
 // Initialize obstacle for level 4
-void create_obstacle_4(int x_pos, int y_pos, int width, int height, toado obs[], int& obs_nums, toado const_obs[], int& const_obs_nums)
+void create_obstacle_4(int x_pos, int y_pos, int width, int height, Point obs[], int& obs_nums, Point const_obs[], int& const_obs_nums)
 {
 	int obs_length = 10;
 	for (int i = y_pos + 1; i <= y_pos + obs_length; i++)
@@ -94,7 +94,7 @@ void create_obstacle_4(int x_pos, int y_pos, int width, int height, toado obs[],
 }
 
 // Make obstacle move
-void move_obs(int x_pos, int y_pos, int width, int height, toado obs[], int obs_nums, bool& up, toado const_obs[], int const_obs_nums)
+void move_obs(int x_pos, int y_pos, int width, int height, Point obs[], int obs_nums, bool& up, Point const_obs[], int const_obs_nums)
 {
 	draw_obstacle(const_obs, const_obs_nums);
 	if (up)
@@ -154,7 +154,7 @@ void move_obs(int x_pos, int y_pos, int width, int height, toado obs[], int obs_
 }
 
 // Generate level 4
-void play_match4(unsigned int x_pos, unsigned int y_pos, unsigned int height, unsigned int width, toado obs[], int obs_nums, bool up, toado const_obs[], int const_obs_nums) {
+void play_match4(unsigned int x_pos, unsigned int y_pos, unsigned int height, unsigned int width, Point obs[], int obs_nums, bool up, Point const_obs[], int const_obs_nums) {
 	// prepare obstacle for level 4
 	create_obstacle_4(x_pos, y_pos, width, height, obs, obs_nums, const_obs, const_obs_nums);
 	// draw match board
@@ -169,7 +169,6 @@ void play_match4(unsigned int x_pos, unsigned int y_pos, unsigned int height, un
 
 //void create_obstacle_5(unsigned int x_pos, unsigned int y_pos, unsigned int height, unsigned int width, toado obs[], int& obs_nums) {}
 
-
 void getConsoleSize(int& columns, int& rows)
 {
 	CONSOLE_SCREEN_BUFFER_INFO csbi;
@@ -179,17 +178,4 @@ void getConsoleSize(int& columns, int& rows)
 	rows = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
 	//printf("columns: %d\n", columns);
 	//printf("rows: %d\n", rows);
-}
-
-void LoadMap()
-{
-	toado* obs;
-	obs = new toado[1000];
-	int obs_nums = 0;
-	toado* const_obs;
-	const_obs = new toado[500];
-	int const_obs_nums = 0;
-	bool up = false;
-	//draw_matchBoard(1, 3, 22, 80);
-	play_match2(1, 3, 23, 80, obs, obs_nums);
 }

@@ -48,7 +48,7 @@ void draw_underline(unsigned int x_pos, unsigned int y_pos, unsigned int height,
 }
 //	draw_matchBoard(1, 3, 21, 80);
 void draw_matchBoard(unsigned int x_pos, unsigned int y_pos, unsigned int height, unsigned int width) {
-	GotoXY(x_pos + 20, y_pos - 2); 
+	GotoXY(x_pos + 20, y_pos - 2);
 	/*
 	*
 	 ████████╗██╗   ██╗████████╗ ██████╗ ██████╗ ██╗ █████╗ ██╗
@@ -78,14 +78,14 @@ void draw_infoBoard(unsigned int x_pos, unsigned int y_pos, unsigned int height,
 }
 
 
-void draw_obstacle(toado obs[], int obs_nums) {
+void draw_obstacle(Point obs[], int obs_nums) {
 	for (int i = 0; i < obs_nums; i++) {
 		GotoXY(obs[i].x, obs[i].y);
 		cout << char(219);
 	}
 }
 
-void draw_game(unsigned int x_pos, unsigned int y_pos, unsigned int height, unsigned int width, toado obs[], int obs_nums) {
+void draw_game(unsigned int x_pos, unsigned int y_pos, unsigned int height, unsigned int width, Point obs[], int obs_nums) {
 	draw_matchBoard(x_pos, y_pos, height, width);
 	draw_obstacle(obs, obs_nums);
 }

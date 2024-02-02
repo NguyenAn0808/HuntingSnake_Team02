@@ -16,19 +16,19 @@ terminalSize getTermSize()
 
 void text_color(int background_color, int text_color)
 {
-	HANDLE color = GetStdHandle(STD_OUTPUT_HANDLE);
-	int color_code = background_color * 16 + text_color;
-	SetConsoleTextAttribute(color, color_code);
+    HANDLE color = GetStdHandle(STD_OUTPUT_HANDLE);
+    int color_code = background_color * 16 + text_color;
+    SetConsoleTextAttribute(color, color_code);
 }
 
 void GotoXY(int x, int y)
 {
-	COORD coord;
+    COORD coord;
 
-	coord.X = x;
-	coord.Y = y;
+    coord.X = x;
+    coord.Y = y;
 
-	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
+    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 }
 
 void LoadConsole()
@@ -186,7 +186,6 @@ void mainMenu() {
             case 13:
                 if (y_pointer / y_menu == 1) {
                     StartGame();
-                    LoadMap();
                     LoadGame();
                 }
                 else {
