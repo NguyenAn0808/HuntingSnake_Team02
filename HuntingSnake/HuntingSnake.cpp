@@ -1,11 +1,14 @@
+#include "Snake.h"
 #include "ConsoleWindow.h"
+#include "graphics.h"
+#include "GenerateMap.h"
 
-// MAIN FUNCTION
 int main()
 {
 	//LoadConsole();
 	//StartGame();
+	//LoadMap();
 	//LoadGame();
-	mainMenu();	
+	mainMenu();
 	return 0;
 }

@@ -1,4 +1,5 @@
 #include "ConsoleWindow.h"
+#include "GenerateMap.h"
 
 axis getTermSize()
 {
@@ -17,19 +18,19 @@ axis getTermSize()
 
 void text_color(int background_color, int text_color)
 {
-	HANDLE color = GetStdHandle(STD_OUTPUT_HANDLE);
-	int color_code = background_color * 16 + text_color;
-	SetConsoleTextAttribute(color, color_code);
+    HANDLE color = GetStdHandle(STD_OUTPUT_HANDLE);
+    int color_code = background_color * 16 + text_color;
+    SetConsoleTextAttribute(color, color_code);
 }
 
 void GotoXY(int x, int y)
 {
-	COORD coord;
+    COORD coord;
 
-	coord.X = x;
-	coord.Y = y;
+    coord.X = x;
+    coord.Y = y;
 
-	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
+    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 }
 
 void LoadConsole()
@@ -49,7 +50,7 @@ void LoadConsole()
     MaximizeConsoleWindow();
 
     //Pause the program to watch result
-    system("pause");
+    //system("pause");
 }
 
 void DisableResizeWindow()
@@ -210,6 +211,7 @@ void mainMenu() {
             case 13: // if user pressed 'Enter'
                 if (y_pointer / y_menu == 1) { // if user press button 1 (Start Game)
                     StartGame();
+                    LoadMap();
                     LoadGame();
                 }
                 else { // other options, will be further develope

@@ -67,7 +67,6 @@ void setBackgroundColor(int bg_color, int txt_color)
 
 void highlightedBox(bool use, unsigned int x_pos, unsigned int y_pos, unsigned int height, unsigned int width, int bg_color, int line_color)
 {	
-	// if user need to use highlighted box
 	if (use) {
 	text_color(bg_color, line_color);
 	for (int ix = x_pos; ix <= x_pos + width; ++ix) {
@@ -83,8 +82,7 @@ void highlightedBox(bool use, unsigned int x_pos, unsigned int y_pos, unsigned i
 		GotoXY(x_pos + width, iy);
 		std::cout << char(219);
 	}
-
-	text_color(0, 7); // set color to default
+	text_color(0, 7);
 	}
 
 	else {

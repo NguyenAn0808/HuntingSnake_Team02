@@ -128,6 +128,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ConsoleWindow.cpp" />
+    <ClCompile Include="GameMatch.cpp" />
     <ClCompile Include="GenerateMap.cpp" />
     <ClCompile Include="graphics.cpp" />
     <ClCompile Include="HuntingSnake.cpp" />
@@ -135,6 +136,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ConsoleWindow.h" />
+    <ClInclude Include="GameMatch.h" />
     <ClInclude Include="GenerateMap.h" />
     <ClInclude Include="graphics.h" />
     <ClInclude Include="Snake.h" />

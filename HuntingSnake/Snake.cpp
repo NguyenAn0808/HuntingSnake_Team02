@@ -1,5 +1,7 @@
 #include "Snake.h"
 #include "ConsoleWindow.h"
+#include "GameMatch.h"
+#include "GenerateMap.h"
 
 // Random number generator (rng) object generates seed to random number [0, 2^64 - 1]
 mt19937_64 rng(chrono::steady_clock::now().time_since_epoch().count());
@@ -7,20 +9,20 @@ mt19937_64 rng(chrono::steady_clock::now().time_since_epoch().count());
 // Declare Global Variables, Structs
 Point Snake[MAX_SIZE_SNAKE]; // Snake
 Point Food[MAX_SIZE_FOOD]; // Food
-Point Obs[MAX_SIZE_OBS]; // Obstacles
 Point Center; // Center coordinates of Gate
 Point Gate[5]; // Coordinates of Gate
+Point obs[1000];
 
-string str[MAX_SIZE_SNAKE]; 
+string str[MAX_SIZE_SNAKE];
 
 int STATE; // DEAD or ALIVE
 int SPEED; // Current speed (Speed increase with each level)
 int ID_Food; // Current index of food 
-int ID_Obs; // Current index of obstacles 
 int LEVEL = 1; // Current level (Maximum is 5 levels)
 int TYPE; // Type of Gate (4 types directions = 4 types gates)
 int cntGate; // index of coordinates of Gate
 int Snake_Size; // Size of snake, initially 6 units and maximum is 22 units
+int obs_nums; // Size of obstacles
 
 char CHAR_LOCK; // At a moment, there is one direction that snake cannot move to
 char MOVING; // At a moment, there are three directions that snake can move
@@ -36,9 +38,8 @@ void StartGame()
 {
 	system("cls"); // Clear screen
 	ResetData(); // Intialize original data
-	DrawBoard(0, 0, WIDTH_CONSOLE, HEIGH_CONSOLE); // Draw board matrix WIDTH * HEIGH with 4 boundaries
 	STATE = 1; // ALIVE (Running thread)
- 	DrawSnake(MSSV); // Draw snake with MSSV of four members in group
+	DrawSnake(MSSV); // Draw snake with MSSV of four members in group
 }
 void LoadGame()
 {
@@ -48,7 +49,7 @@ void LoadGame()
 	while (true)
 	{
 		char temp = toupper(_getch()); // Get character from the keyboard (including 4 arrows, WASD)
-		ResumeThread(handle_thread_obj); 
+		ResumeThread(handle_thread_obj);
 
 		// H, P, M, K -> 4 arrows when transform into characters
 		if ((temp == 'W' || temp == 'S' || temp == 'A' || temp == 'D' ||
@@ -58,11 +59,22 @@ void LoadGame()
 		}
 	}
 }
-
+void LoadMap()
+{
+	/*Point* const_obs;
+	const_obs = new Point[500];*/
+	/*int const_obs_nums = 0;
+	bool up = false;*/
+	//draw_matchBoard(1, 3, 22, 80);
+	play_match2(1, 3, HEIGH_GAME, WIDTH_GAME, obs, obs_nums);
+	//play_match3(0, 3, 23, 81, obs, obs_nums);
+	//play_match4(0, 3, 23, 81, obs, obs_nums, up, const_obs, const_obs_nums);
+}
 void ProcessDead()
 {
 	STATE = 0; // DEAD
-	GotoXY(0, HEIGH_CONSOLE + 2);
+	cout << Snake[0].x << " " << Snake[0].y << '\n';
+	GotoXY(1, 2);
 	cout << "YOU LOSE";
 }
 void ResetData()
@@ -79,10 +91,10 @@ void ResetData()
 
 	CHAR_LOCK = 'A';
 	MOVING = 'D';
-	 
+
 	ID_Food = 0;
 
-	int Init = HEIGH_CONSOLE / 2 + 5;
+	int Init = 10 / 2 + 5;
 
 	//Initialize the coordinates of snake
 
@@ -180,36 +192,10 @@ void ThreadFunction(void)
 
 		DrawSnake(MSSV); // After one move, draw new snake because of the change of coordinates
 		ProcessGate(); // Process if meet the conditions to create the gate
-		//DrawObs();
 		Sleep(100 / (SPEED + DeltaSpeed - addTime)); // Sleep function will set the speed of snake
 	}
 }
 
-void DrawBoard(int x, int y, int Width, int Heigh)
-{
-	GotoXY(x, y);
-	cout << 'X';
-
-	for (int i = 1; i <= Width; i++)
-		cout << 'X';
-
-	GotoXY(x, Heigh + y);
-	cout << 'X';
-
-	for (int i = 1; i <= Width; i++)
-		cout << 'X';
-
-	for (int j = y + 1; j < Heigh + y; j++)
-	{
-		GotoXY(x, j);
-		cout << 'X';
-
-		GotoXY(x + Width, j);
-		cout << 'X';
-	}
-
-	GotoXY(0, 0);
-}
 void DrawSnake(const string& str) // With str is MSSV
 {
 	// Draw head of snake
@@ -230,30 +216,24 @@ void DrawFood()
 	text_color(0, 10);
 	cout << "O";
 }
-void DrawObs()
-{
-	GotoXY(Obs[ID_Obs].x, Obs[ID_Obs].y);
-	text_color(0, 5);
-	cout << "T";
-}
 void DrawGate(int x, int y)
 {
 	TYPE = Random(1, 4); // Random 4 types of gates
 
 	switch (TYPE)
 	{
-		case 1:
-			DrawGateU1(x, y, "o"); 
-			break;
-		case 2:
-			DrawGateU2(x, y, "o");
-			break;
-		case 3:
-			DrawGateU3(x, y, "o");
-			break;
-		case 4:
-			DrawGateU4(x, y, "o");
-			break;
+	case 1:
+		DrawGateU1(x, y, "o");
+		break;
+	case 2:
+		DrawGateU2(x, y, "o");
+		break;
+	case 3:
+		DrawGateU3(x, y, "o");
+		break;
+	case 4:
+		DrawGateU4(x, y, "o");
+		break;
 	}
 
 	GateDraw = true; // Gate exits
@@ -303,7 +283,7 @@ void DrawGateU3(int x, int y, const string& st)
 	for (int i = -1; i <= 1; i++)
 	{
 		GotoXY(x, y + i);
-		Gate[cntGate++] = { x, y + i};
+		Gate[cntGate++] = { x, y + i };
 		text_color(0, 4);
 		cout << st;
 	}
@@ -318,7 +298,7 @@ void DrawGateU3(int x, int y, const string& st)
 	text_color(0, 4);
 	cout << st;
 }
-void DrawGateU4(int x, int y, const string &st)
+void DrawGateU4(int x, int y, const string& st)
 {
 	for (int i = -1; i <= 1; i++)
 	{
@@ -365,7 +345,7 @@ void ProcessGate()
 		{
 			// Erase Gate
 			EraseGate();
-			GateDraw = false; 
+			GateDraw = false;
 
 			DeltaSpeed += 0.3F; // Increase speed when move to next level
 			LEVEL++; // Move to next level
@@ -396,7 +376,10 @@ void EraseOldPosition()
 bool isValidFood(int x, int y)
 {
 	for (int i = 0; i < Snake_Size; i++)
-	{
+	{/*
+		if (obs[i].x == x && obs[i].y == y)
+			return false;*/
+
 		if (Snake[i].x == x && Snake[i].y == y)
 			return false;
 	}
@@ -410,10 +393,10 @@ void GenerateFood()
 	{
 		do
 		{
-			x = Random(1, WIDTH_CONSOLE - 1); 
-			y = Random(1, HEIGH_CONSOLE - 1);
+			x = Random(2, WIDTH_GAME - 1);
+			y = Random(4, HEIGH_GAME - 1);
 		} while (isValidFood(x, y) == false); // Check if can create food
-		 
+
 		Food[i] = { x, y }; // Random coordinates of food into array
 	}
 }
@@ -429,50 +412,23 @@ void EatFood()
 	else // Increase size of snake, index of food
 	{
 		ID_Food++;
-		Snake_Size++;	
+		Snake_Size++;
 		GenerateFood();
 	}
 }
 
-bool isValidObs(int x, int y)
-{
-	for (int i = 0; i < ID_Food; i++)
-	{
-		if (Food[i].x == x && Food[i].y == y)
-			return false;
-	}
-
-	for (int i = 0; i < Snake_Size; i++)
-	{
-		if (Snake[i].x == x && Snake[i].y == y)
-			return false;
-	}
-
-	return true;
-}
-void GenerateObs(void)
-{
-	int x, y;
-	for (int i = 0; i < MAX_SIZE_OBS; i++)
-	{
-		do
-		{
-			x = Random(1, WIDTH_CONSOLE - 1);
-			y = Random(1, HEIGH_CONSOLE - 1);
-		} while (isValidObs(x, y) == false);
-		Obs[i] = { x, y };
-	}
-}
 void GenerateCenterGate()
 {
 	int x, y;
 	do
 	{
-		x = Random(2, WIDTH_CONSOLE - 2);
-		y = Random(2, HEIGH_CONSOLE - 2);
-	} while (CenterGate(x - 1, y) == false && CenterGate(x, y) == false && CenterGate(x + 1, y) == false 
-		  && CenterGate(x - 1, y + 2) == false && CenterGate(x + 1, y + 2) == false); 
-	// Check 5 * 5 matrix with center is Center Point Of Gate (avoid gate opposite the bound)
+		x = Random(5, WIDTH_GAME - 2);
+		y = Random(5, HEIGH_GAME - 2);
+	} while (CenterGate(x - 2, y) == false || CenterGate(x, y) == false || CenterGate(x + 2, y) == false
+		|| CenterGate(x - 2, y - 2) == false || CenterGate(x, y - 2) == false && CenterGate(x + 2, y - 2) == false
+		|| CenterGate(x - 2, y + 2) == false || CenterGate(x, y + 2) == false && CenterGate(x + 2, y + 2) == false);
+
+	// Check 7 * 7 matrix with center is Center Point Of Gate (avoid gate opposite the bound)
 	// It makes sure that there are no Food, Obstacles and Snake in this 5x5 matrix
 
 	Center = { x, y };
@@ -489,7 +445,7 @@ bool CenterGate(int x, int y)
 
 	for (int dir = 0; dir < 8; dir++) // Check 8 directions from Center Point of Gate (Not food, obstacles, snake, wall)
 	{
-		int new_x = x + dx[dir]; 
+		int new_x = x + dx[dir];
 		int new_y = y + dy[dir];
 
 		if (TouchWall(new_x, new_y) == true)
@@ -497,26 +453,14 @@ bool CenterGate(int x, int y)
 
 		if (isValidFood(new_x, new_y) == false)
 			return false;
-
-		if (isValidObs(new_x, new_y) == false)
-			return false;
 	}
 
 	return true;
 }
-bool TouchObs()
-{
-	for (int i = 0; i < MAX_SIZE_OBS; i++)
-	{
-		if (Snake[0].x == Obs[i].x && Snake[0].y == Obs[i].y)
-			return true;
-	}
 
-	return false;
-}
 bool TouchWall(int x, int y)
 {
-	return !(x > 0 && x < WIDTH_CONSOLE && y > 0 && y < HEIGH_CONSOLE);
+	return !(x > 1 && x < WIDTH_GAME && y > 3 && y < HEIGH_GAME);
 }
 bool TouchItself()
 {
@@ -526,6 +470,15 @@ bool TouchItself()
 
 	return false;
 }
+bool TouchObs(int x, int y)
+{
+	for (int i = 0; i < obs_nums; i++)
+		if (x == obs[i].x && y == obs[i].y)
+			return true;
+
+	return false;
+}
+
 bool TouchGate()
 {
 	for (int i = 0; i < cntGate; i++)
@@ -545,7 +498,7 @@ bool TouchGate()
 
 void MoveUp()
 {
-	if (TouchWall(Snake[0].x, Snake[0].y - 1) == true) // Touch the Wall -> You lose
+	if (TouchWall(Snake[0].x, Snake[0].y - 1) == true || TouchObs(Snake[0].x, Snake[0].y - 1) == true) // Touch the Wall -> You lose
 	{
 		ProcessDead();
 		return;
@@ -559,7 +512,7 @@ void MoveUp()
 
 	Snake[0].y--; // Move up
 
-	if (TouchItself() || TouchObs()) // Check conditions to make sure that snake still ALIVE
+	if (TouchItself()) // Check conditions to make sure that snake still ALIVE
 	{
 		ProcessDead();
 		return;
@@ -567,7 +520,7 @@ void MoveUp()
 }
 void MoveDown()
 {
-	if (TouchWall(Snake[0].x, Snake[0].y + 1) == true)
+	if (TouchWall(Snake[0].x, Snake[0].y + 1) == true || TouchObs(Snake[0].x, Snake[0].y + 1) == true)
 	{
 		ProcessDead();
 		return;
@@ -578,10 +531,10 @@ void MoveDown()
 
 	for (int i = Snake_Size - 2; i >= 0; i--)
 		Snake[i + 1] = Snake[i];
-	 
+
 	Snake[0].y++; // Move down
 
-	if (TouchItself() || TouchObs())
+	if (TouchItself())
 	{
 		ProcessDead();
 		return;
@@ -589,7 +542,7 @@ void MoveDown()
 }
 void MoveRight()
 {
-	if (TouchWall(Snake[0].x + 1, Snake[0].y) == true)
+	if (TouchWall(Snake[0].x + 1, Snake[0].y) == true || TouchObs(Snake[0].x + 1, Snake[0].y) == true)
 	{
 		ProcessDead();
 		return;
@@ -603,7 +556,7 @@ void MoveRight()
 
 	Snake[0].x++; // Move right
 
-	if (TouchItself() || TouchObs())
+	if (TouchItself())
 	{
 		ProcessDead();
 		return;
@@ -611,7 +564,7 @@ void MoveRight()
 }
 void MoveLeft()
 {
-	if (TouchWall(Snake[0].x - 1, Snake[0].y) == true)
+	if (TouchWall(Snake[0].x - 1, Snake[0].y) == true || TouchObs(Snake[0].x - 1, Snake[0].y) == true)
 	{
 		ProcessDead();
 		return;
@@ -625,7 +578,7 @@ void MoveLeft()
 
 	Snake[0].x--; // Move left
 
-	if (TouchItself() || TouchObs())
+	if (TouchItself())
 	{
 		ProcessDead();
 		return;
