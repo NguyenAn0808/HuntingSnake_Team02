@@ -6,9 +6,9 @@
 int main()
 {
 	//LoadConsole();
-	//StartGame();
-	//LoadMap();
-	//LoadGame();
-	mainMenu();
+	StartGame();
+	LoadMap();
+	LoadGame();
+	//mainMenu();
 	return 0;
 }
