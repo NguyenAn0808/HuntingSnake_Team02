@@ -50,7 +50,7 @@ void draw_rectangle(unsigned int x_pos, unsigned int y_pos, unsigned int height,
 		GotoXY(x_pos + (width - text.size()) / 2, y_pos + height / 2);
 		std::cout << text;
 	}
-	text_color(0, 7);
+	text_color(0, 7); // set color to default
 
 }
 
@@ -62,11 +62,12 @@ void setBackgroundColor(int bg_color, int txt_color)
 			std::cout << char(219);
 		}
 	}
-	text_color(bg_color, txt_color);
+	text_color(0, 7); //set to default
 }
 
 void highlightedBox(bool use, unsigned int x_pos, unsigned int y_pos, unsigned int height, unsigned int width, int bg_color, int line_color)
 {	
+	// if user need to use highlighted box
 	if (use) {
 	text_color(bg_color, line_color);
 	for (int ix = x_pos; ix <= x_pos + width; ++ix) {
@@ -82,31 +83,12 @@ void highlightedBox(bool use, unsigned int x_pos, unsigned int y_pos, unsigned i
 		GotoXY(x_pos + width, iy);
 		std::cout << char(219);
 	}
-	text_color(0, 7);
+
+	text_color(0, 7); // set color to default
 	}
+
 	else {
-		text_color(BG_COLOR, 5);
-		for (int ix = x_pos + 1; ix < x_pos + width; ++ix) {
-			GotoXY(ix, y_pos);
-			std::cout << char(205);
-			GotoXY(ix, y_pos + height);
-			std::cout << char(205);
-		}
-		GotoXY(x_pos, y_pos);
-		for (int iy = y_pos + 1; iy < y_pos + height; ++iy) {
-			GotoXY(x_pos, iy);
-			std::cout << char(186);
-			GotoXY(x_pos + width, iy);
-			std::cout << char(186);
-		}
-		GotoXY(x_pos, y_pos);
-		std::cout << char(201);
-		GotoXY(x_pos + width, y_pos);
-		std::cout << char(187);
-		GotoXY(x_pos, y_pos + height);
-		std::cout << char(200);
-		GotoXY(x_pos + width, y_pos + height);
-		std::cout << char(188);
-		text_color(0, 7);
+		// set back to normal state when navigate to other button
+		draw_rectangle(x_pos, y_pos, height, width, 5, bg_color, "", 0);
 	}
 }

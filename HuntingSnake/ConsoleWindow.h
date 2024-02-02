@@ -7,13 +7,13 @@
 #define BG_COLOR 1
 #define TXT_COLOR 7
 
-struct terminalSize
+struct axis //store terminal's axis
 {
 	int x;
 	int y;
 };
 
-terminalSize getTermSize();
+axis getTermSize();
 
 void text_color(int background_color, int text_color);
 
