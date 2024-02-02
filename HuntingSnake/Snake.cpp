@@ -3,8 +3,8 @@
 #include "GameMatch.h"
 #include "GenerateMap.h"
 
-// Random number generator (rng) object generates seed to random number [0, 2^64 - 1]
-mt19937_64 rng(chrono::steady_clock::now().time_since_epoch().count());
+	// Random number generator (rng) generates seed to random number [0, 2^64 - 1]
+	mt19937_64 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 // Declare Global Variables, Structs
 Point Snake[MAX_SIZE_SNAKE]; // Snake
@@ -345,6 +345,9 @@ void EraseOldPosition()
 
 bool isValidFood(int x, int y)
 {
+	if (TouchObs(x, y) == true)
+		return false;
+
 	for (int i = 0; i < Snake_Size; i++)
 		if (Snake[i].x == x && Snake[i].y == y)
 			return false;
@@ -360,7 +363,7 @@ void GenerateFood()
 		{
 			x = Random(2, WIDTH_GAME - 1);
 			y = Random(4, HEIGH_GAME - 1);
-		} while (isValidFood(x, y) == false || TouchObs(x, y) == true); // Check if can create food
+		} while (isValidFood(x, y) == false); // Check if can create food
 
 		Food[i] = { x, y }; // Random coordinates of food into array
 	}

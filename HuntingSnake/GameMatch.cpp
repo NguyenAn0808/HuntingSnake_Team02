@@ -1,6 +1,6 @@
 ﻿#include "GameMatch.h"
 
-
+// change text inside color
 void setTextColor(int color)
 {
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
@@ -36,6 +36,7 @@ void draw_rec(unsigned int x_pos, unsigned int y_pos, unsigned int height, unsig
 	cout << char(188);
 }
 
+// draw box with words inside
 void draw_underline(unsigned int x_pos, unsigned int y_pos, unsigned int height, unsigned int width, string text, int value, int txtColor, int bg_color, int line_color) {
 	text_color(bg_color, txtColor);
 	if (!text.empty()) {
@@ -47,7 +48,8 @@ void draw_underline(unsigned int x_pos, unsigned int y_pos, unsigned int height,
 
 	draw_rec(x_pos, y_pos, height, width);
 }
-//	draw_matchBoard(1, 3, 21, 80);
+
+//	draw_matchBoard
 void draw_matchBoard(unsigned int x_pos, unsigned int y_pos, unsigned int height, unsigned int width, int &SCORE, int &LEVEL) {
 	GotoXY(x_pos + 20, y_pos - 2);
 	/*
@@ -66,6 +68,8 @@ void draw_matchBoard(unsigned int x_pos, unsigned int y_pos, unsigned int height
 	draw_underline(width + 5, height, 3, width - 50 + 2, "SCORE: ", SCORE, 2, 0, 5);
 	draw_underline(width + 5, height + 4, 2, width - 50 + 2, "LEVEL: ", LEVEL, 2, 0, 5);
 }
+
+// draw infor board
 void draw_infoBoard(unsigned int x_pos, unsigned int y_pos, unsigned int height, unsigned int width, int txtColor, int bg_color, int line_color) {
 	draw_rec(x_pos, y_pos, height, width);
 	setTextColor(2);
@@ -77,7 +81,7 @@ void draw_infoBoard(unsigned int x_pos, unsigned int y_pos, unsigned int height,
 	GotoXY(x_pos + 15, y_pos + 15); cout << "PAUSE: PRESS SPACE";
 }
 
-
+// draw obstacle from create_obs
 void draw_obstacle(Point obs[], int obs_nums) {
 	for (int i = 0; i < obs_nums; i++) {
 		GotoXY(obs[i].x, obs[i].y);
@@ -85,9 +89,9 @@ void draw_obstacle(Point obs[], int obs_nums) {
 	}
 }
 
-void draw_game(unsigned int x_pos, unsigned int y_pos, unsigned int height, unsigned int width, Point obs[], int obs_nums) {
+//void draw_game(unsigned int x_pos, unsigned int y_pos, unsigned int height, unsigned int width, Point obs[], int obs_nums) {
 //	draw_matchBoard(x_pos, y_pos, height, width);
 //	draw_obstacle(obs, obs_nums);
-}
+//}
 
 
