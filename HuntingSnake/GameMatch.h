@@ -9,11 +9,11 @@ void setTextColor(int color);
 
 void draw_rec(unsigned int x_pos, unsigned int y_pos, unsigned int height, unsigned int width);
 
-void draw_matchBoard(unsigned int x_pos, unsigned int y_pos, unsigned int height, unsigned int width);
+void draw_matchBoard(unsigned int x_pos, unsigned int y_pos, unsigned int height, unsigned int width, int& SCORE, int& LEVEL);
 
 void draw_infoBoard(unsigned int x_pos, unsigned int y_pos, unsigned int height, unsigned int width, int txtColor, int bg_color, int line_color);
 
-void draw_underline(unsigned int x_pos, unsigned int y_pos, unsigned int height, unsigned int width, string text, int txtColor, int bg_color, int line_color);
+void draw_underline(unsigned int x_pos, unsigned int y_pos, unsigned int height, unsigned int width, string text, int value, int txtColor, int bg_color, int line_color);
 
 void draw_obstacle(Point obs[], int obs_nums);
 

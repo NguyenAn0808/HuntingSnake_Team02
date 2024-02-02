@@ -19,6 +19,7 @@ int STATE; // DEAD or ALIVE
 int SPEED; // Current speed (Speed increase with each level)
 int ID_Food; // Current index of food 
 int LEVEL = 1; // Current level (Maximum is 5 levels)
+int SCORE; // Current score
 int TYPE; // Type of Gate (4 types directions = 4 types gates)
 int cntGate; // index of coordinates of Gate
 int Snake_Size; // Size of snake, initially 6 units and maximum is 22 units
@@ -66,16 +67,17 @@ void LoadMap()
 	/*int const_obs_nums = 0;
 	bool up = false;*/
 	//draw_matchBoard(1, 3, 22, 80);
-	play_match2(1, 3, HEIGH_GAME, WIDTH_GAME, obs, obs_nums);
+	create_obstacle_2(1, 3, HEIGH_BOARD, WIDTH_BOARD, obs, obs_nums);
+	draw_matchBoard(1, 3, HEIGH_BOARD, WIDTH_BOARD, SCORE, LEVEL);
+	draw_obstacle(obs, obs_nums);
 	//play_match3(0, 3, 23, 81, obs, obs_nums);
 	//play_match4(0, 3, 23, 81, obs, obs_nums, up, const_obs, const_obs_nums);
 }
 void ProcessDead()
 {
 	STATE = 0; // DEAD
-	cout << Snake[0].x << " " << Snake[0].y << '\n';
-	GotoXY(1, 2);
-	cout << "YOU LOSE";
+	GotoXY(40, 1);
+	cout << "GAME OVER";
 }
 void ResetData()
 {
@@ -117,9 +119,10 @@ void ThreadFunction(void)
 			EraseOldPosition();
 			switch (MOVING)
 			{
-				// WASD Key
-
-			case 'W':
+				// WASD Key   W: Up, S: Down, A: Left, D: Right
+				// Arrow Keys H: Up, P: Down, K: Left, M: Right
+				// Addtime set speed different between columns and rows
+			case 'W': case 'H':
 			{
 				MoveUp();
 				CHAR_LOCK = 'S';
@@ -127,7 +130,7 @@ void ThreadFunction(void)
 				break;
 			}
 
-			case 'S':
+			case 'S': case 'P':
 			{
 				MoveDown();
 				CHAR_LOCK = 'W';
@@ -135,7 +138,7 @@ void ThreadFunction(void)
 				break;
 			}
 
-			case 'A':
+			case 'A': case 'K':
 			{
 				MoveLeft();
 				CHAR_LOCK = 'D';
@@ -143,48 +146,14 @@ void ThreadFunction(void)
 				break;
 			}
 
-			case 'D':
+			case 'D': case 'M':
 			{
 				MoveRight();
 				CHAR_LOCK = 'A';
 				addTime = 0;
 				break;
 			}
-
-
-			// Arrow Key
-			case 'H':
-			{
-				MoveUp();
-				CHAR_LOCK = 'P';
-				addTime = 0.35F;
-				break;
-			}
-
-			case 'P':
-			{
-				MoveDown();
-				CHAR_LOCK = 'H';
-				addTime = 0.35F;
-				break;
-			}
-
-			case 'K':
-			{
-				MoveLeft();
-				CHAR_LOCK = 'M';
-				addTime = 0;
-				break;
-			}
-
-			case 'M':
-			{
-				MoveRight();
-				CHAR_LOCK = 'K';
-				addTime = 0;
-				break;
-			}
-
+			
 			default:
 				break;
 			}
@@ -350,6 +319,7 @@ void ProcessGate()
 			DeltaSpeed += 0.3F; // Increase speed when move to next level
 			LEVEL++; // Move to next level
 
+			draw_matchBoard(1, 3, HEIGH_BOARD, WIDTH_BOARD, SCORE, LEVEL);
 			ResetData(); // Intialize original data when move to new level
 		}
 	}
@@ -376,13 +346,8 @@ void EraseOldPosition()
 bool isValidFood(int x, int y)
 {
 	for (int i = 0; i < Snake_Size; i++)
-	{/*
-		if (obs[i].x == x && obs[i].y == y)
-			return false;*/
-
 		if (Snake[i].x == x && Snake[i].y == y)
 			return false;
-	}
 
 	return true;
 }
@@ -395,13 +360,16 @@ void GenerateFood()
 		{
 			x = Random(2, WIDTH_GAME - 1);
 			y = Random(4, HEIGH_GAME - 1);
-		} while (isValidFood(x, y) == false); // Check if can create food
+		} while (isValidFood(x, y) == false || TouchObs(x, y) == true); // Check if can create food
 
 		Food[i] = { x, y }; // Random coordinates of food into array
 	}
 }
 void EatFood()
 {
+	SCORE += 50;
+	draw_matchBoard(1, 3, HEIGH_BOARD, WIDTH_BOARD, SCORE, LEVEL);
+
 	Snake[Snake_Size] = Food[ID_Food]; // Insert new size of body (Insert food coordinates)
 
 	if (ID_Food == MAX_SIZE_FOOD - 1) // 4 foods can generate Gate
@@ -452,6 +420,9 @@ bool CenterGate(int x, int y)
 			return false;
 
 		if (isValidFood(new_x, new_y) == false)
+			return false;
+
+		if (TouchObs(new_x, new_y) == true)
 			return false;
 	}
 

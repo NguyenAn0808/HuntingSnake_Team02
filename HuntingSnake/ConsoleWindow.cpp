@@ -210,6 +210,7 @@ void mainMenu() {
                 break;
             case 13: // if user pressed 'Enter'
                 if (y_pointer / y_menu == 1) { // if user press button 1 (Start Game)
+                    //LoadConsole();
                     StartGame();
                     LoadMap();
                     LoadGame();

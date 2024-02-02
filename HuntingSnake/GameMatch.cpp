@@ -36,18 +36,19 @@ void draw_rec(unsigned int x_pos, unsigned int y_pos, unsigned int height, unsig
 	cout << char(188);
 }
 
-void draw_underline(unsigned int x_pos, unsigned int y_pos, unsigned int height, unsigned int width, string text, int txtColor, int bg_color, int line_color) {
+void draw_underline(unsigned int x_pos, unsigned int y_pos, unsigned int height, unsigned int width, string text, int value, int txtColor, int bg_color, int line_color) {
 	text_color(bg_color, txtColor);
 	if (!text.empty()) {
 		GotoXY(x_pos + (width - text.size()) / 2, y_pos + height / 2);
-		std::cout << text;
+		cout << text;
+		if (value != 0) cout << value;
 	}
 	text_color(bg_color, line_color);
 
 	draw_rec(x_pos, y_pos, height, width);
 }
 //	draw_matchBoard(1, 3, 21, 80);
-void draw_matchBoard(unsigned int x_pos, unsigned int y_pos, unsigned int height, unsigned int width) {
+void draw_matchBoard(unsigned int x_pos, unsigned int y_pos, unsigned int height, unsigned int width, int &SCORE, int &LEVEL) {
 	GotoXY(x_pos + 20, y_pos - 2);
 	/*
 	*
@@ -60,20 +61,19 @@ void draw_matchBoard(unsigned int x_pos, unsigned int y_pos, unsigned int height
 	*/
 	draw_rec(x_pos, y_pos, height, width);
 	draw_infoBoard(width + 5, y_pos, height - 4, width - 48, 2, 0, 5);
-	draw_underline(x_pos, height + 4, 2, width - 50, "MAP 1: ", 2, 0, 5);
-	draw_underline(width - 50 + 2, height + 4, 2, width - (width - 50) - 1, "PLAYER: ", 2, 0, 5);
-	draw_underline(width + 5, height, 3, width - 50 + 2, "SCORE: ", 2, 0, 5);
-	draw_underline(width + 5, height + 4, 2, width - 50 + 2, "LEVEL 1: ", 2, 0, 5);
-
+	draw_underline(x_pos, height + 4, 2, width - 50, "MAP: ", 1, 2, 0, 5);
+	draw_underline(width - 50 + 2, height + 4, 2, width - (width - 50) - 1, "PLAYER: ", 1, 2, 0, 5);
+	draw_underline(width + 5, height, 3, width - 50 + 2, "SCORE: ", SCORE, 2, 0, 5);
+	draw_underline(width + 5, height + 4, 2, width - 50 + 2, "LEVEL: ", LEVEL, 2, 0, 5);
 }
 void draw_infoBoard(unsigned int x_pos, unsigned int y_pos, unsigned int height, unsigned int width, int txtColor, int bg_color, int line_color) {
 	draw_rec(x_pos, y_pos, height, width);
 	setTextColor(2);
 	GotoXY(x_pos + 7, y_pos + 4); cout << "TUTORIAL";
-	draw_underline(x_pos + 8, y_pos + 4, 2, 4, "W", txtColor, bg_color, line_color);
-	draw_underline(x_pos + 2, y_pos + 7, 2, 4, "A", txtColor, bg_color, line_color);
-	draw_underline(x_pos + 8, y_pos + 7, 2, 4, "S", txtColor, bg_color, line_color);
-	draw_underline(x_pos + 14, y_pos + 7, 2, 4, "D", txtColor, bg_color, line_color);
+	draw_underline(x_pos + 8, y_pos + 4, 2, 4, "W", 0, txtColor, bg_color, line_color);
+	draw_underline(x_pos + 2, y_pos + 7, 2, 4, "A", 0, txtColor, bg_color, line_color);
+	draw_underline(x_pos + 8, y_pos + 7, 2, 4, "S", 0, txtColor, bg_color, line_color);
+	draw_underline(x_pos + 14, y_pos + 7, 2, 4, "D", 0, txtColor, bg_color, line_color);
 	GotoXY(x_pos + 15, y_pos + 15); cout << "PAUSE: PRESS SPACE";
 }
 
@@ -86,8 +86,8 @@ void draw_obstacle(Point obs[], int obs_nums) {
 }
 
 void draw_game(unsigned int x_pos, unsigned int y_pos, unsigned int height, unsigned int width, Point obs[], int obs_nums) {
-	draw_matchBoard(x_pos, y_pos, height, width);
-	draw_obstacle(obs, obs_nums);
+//	draw_matchBoard(x_pos, y_pos, height, width);
+//	draw_obstacle(obs, obs_nums);
 }
 
 

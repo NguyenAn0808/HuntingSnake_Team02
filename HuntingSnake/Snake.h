@@ -13,13 +13,14 @@
 using namespace std;
 
 // CONSTANTS
-const int MAX_SIZE_FOOD = 2;
+const int MAX_SIZE_FOOD = 4;
 const int MAX_SIZE_SNAKE = 30;
 const int MAX_SPEED = 5;
 const int MAX_SIZE_OBS = 10;
 const int MAX_LEVEL = 5;
 
-const int WIDTH_GAME = 80, HEIGH_GAME = 23;
+const int WIDTH_GAME = 81, HEIGH_GAME = 26;
+const int WIDTH_BOARD = 81, HEIGH_BOARD = 23;
 
 const string MSSV = "23127148231271522312744223127469";
 

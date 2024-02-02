@@ -5,10 +5,6 @@
 
 int main()
 {
-	//LoadConsole();
-	StartGame();
-	LoadMap();
-	LoadGame();
-	//mainMenu();
+	mainMenu();
 	return 0;
 }
