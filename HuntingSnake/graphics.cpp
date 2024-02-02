@@ -66,23 +66,23 @@ void setBackgroundColor(int bg_color, int txt_color)
 }
 
 void highlightedBox(bool use, unsigned int x_pos, unsigned int y_pos, unsigned int height, unsigned int width, int bg_color, int line_color)
-{	
+{
 	if (use) {
-	text_color(bg_color, line_color);
-	for (int ix = x_pos; ix <= x_pos + width; ++ix) {
-		GotoXY(ix, y_pos);
-		std::cout << char(219);
-		GotoXY(ix, y_pos + height);
-		std::cout << char(219);
-	}
-	GotoXY(x_pos, y_pos);
-	for (int iy = y_pos; iy <= y_pos + height; ++iy) {
-		GotoXY(x_pos, iy);
-		std::cout << char(219);
-		GotoXY(x_pos + width, iy);
-		std::cout << char(219);
-	}
-	text_color(0, 7);
+		text_color(bg_color, line_color);
+		for (int ix = x_pos; ix <= x_pos + width; ++ix) {
+			GotoXY(ix, y_pos);
+			std::cout << char(219);
+			GotoXY(ix, y_pos + height);
+			std::cout << char(219);
+		}
+		GotoXY(x_pos, y_pos);
+		for (int iy = y_pos; iy <= y_pos + height; ++iy) {
+			GotoXY(x_pos, iy);
+			std::cout << char(219);
+			GotoXY(x_pos + width, iy);
+			std::cout << char(219);
+		}
+		text_color(0, 7);
 	}
 
 	else {
