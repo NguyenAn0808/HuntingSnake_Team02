@@ -78,7 +78,7 @@ void draw_infoBoard(unsigned int x_pos, unsigned int y_pos, unsigned int height,
 	draw_underline(x_pos + 2, y_pos + 8, 2, 4, "A", 0, txtColor, bg_color, line_color);
 	draw_underline(x_pos + 8, y_pos + 8, 2, 4, "S", 0, txtColor, bg_color, line_color);
 	draw_underline(x_pos + 14, y_pos + 8, 2, 4, "D", 0, txtColor, bg_color, line_color);
-	GotoXY(x_pos + 3, y_pos + 13); cout << "PAUSE:         PRESS P";
+	GotoXY(x_pos + 3, y_pos + 13); cout << "PAUSE:         PRESS U";
 	GotoXY(x_pos + 3, y_pos + 15); cout << "EXIT:          PRESS ESC";
 }
 

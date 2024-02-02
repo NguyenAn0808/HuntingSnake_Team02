@@ -54,7 +54,7 @@ void LoadGame()
 		{
 			ResumeThread(handle_thread_obj);
 
-			if (temp == 'P') // 'P' Key to Pause Game
+			if (temp == 'U') // 'P' Key to Pause Game
 				PauseGame(handle_thread_obj);
 			else if (temp == 27) // 'ESC' Key to Exit Game
 			{
