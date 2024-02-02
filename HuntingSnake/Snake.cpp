@@ -49,17 +49,37 @@ void LoadGame()
 
 	while (true)
 	{
-		char temp = toupper(_getch()); // Get character from the keyboard (including 4 arrows, WASD)
-		ResumeThread(handle_thread_obj);
-
-		// H, P, M, K -> 4 arrows when transform into characters
-		if ((temp == 'W' || temp == 'S' || temp == 'A' || temp == 'D' ||
-			temp == 'H' || temp == 'P' || temp == 'M' || temp == 'K') && temp != CHAR_LOCK)
+		char temp = toupper(_getch()); // Get character from the keyboard (including 4 arrows, WASD, ...)
+		if (STATE == 1)
 		{
-			MOVING = temp; // Next movement of snake
+			ResumeThread(handle_thread_obj);
+
+			if (temp == 'P') // 'P' Key to Pause Game
+				PauseGame(handle_thread_obj);
+			else if (temp == 27) // 'ESC' Key to Exit Game
+			{
+				ExitGame(handle_thread_obj);
+				return;
+			}
+			// H, P, M, K -> 4 arrows when transform into characters
+			else if ((temp == 'W' || temp == 'S' || temp == 'A' || temp == 'D' ||
+				temp == 'H' || temp == 'P' || temp == 'M' || temp == 'K') && temp != CHAR_LOCK)
+			{
+				MOVING = temp; // Next movement of snake
+			}
 		}
 	}
 }
+void PauseGame(HANDLE t)
+{
+	SuspendThread(t);
+}
+void ExitGame(HANDLE t)
+{
+	system("cls");
+	TerminateThread(t, 0);
+}
+
 void LoadMap()
 {
 	/*Point* const_obs;
@@ -116,7 +136,7 @@ void ThreadFunction(void)
 	{
 		if (STATE == 1) // If snake ALIVE -> continue
 		{
-			EraseOldPosition();
+			EraseOldSnake(); // Erase old snake and draw new snake
 			switch (MOVING)
 			{
 				// WASD Key   W: Up, S: Down, A: Left, D: Right
@@ -125,7 +145,7 @@ void ThreadFunction(void)
 			case 'W': case 'H':
 			{
 				MoveUp();
-				CHAR_LOCK = 'S';
+				CHAR_LOCK = (MOVING == 'W' ? 'S' : 'P');
 				addTime = 0.35F;
 				break;
 			}
@@ -133,7 +153,7 @@ void ThreadFunction(void)
 			case 'S': case 'P':
 			{
 				MoveDown();
-				CHAR_LOCK = 'W';
+				CHAR_LOCK = (MOVING == 'S' ? 'W' : 'H');
 				addTime = 0.35F;
 				break;
 			}
@@ -141,7 +161,7 @@ void ThreadFunction(void)
 			case 'A': case 'K':
 			{
 				MoveLeft();
-				CHAR_LOCK = 'D';
+				CHAR_LOCK = (MOVING == 'A' ? 'D' : 'M');
 				addTime = 0;
 				break;
 			}
@@ -149,7 +169,7 @@ void ThreadFunction(void)
 			case 'D': case 'M':
 			{
 				MoveRight();
-				CHAR_LOCK = 'A';
+				CHAR_LOCK = (MOVING == 'D' ? 'A' : 'K');
 				addTime = 0;
 				break;
 			}
@@ -332,7 +352,7 @@ void EraseGate()
 		cout << " ";
 	}
 }
-void EraseOldPosition()
+void EraseOldSnake()
 {
 	for (int i = 0; i < Snake_Size; i++)
 	{
@@ -359,11 +379,12 @@ void GenerateFood()
 	int x, y;
 	for (int i = 0; i < MAX_SIZE_FOOD; i++)
 	{
-		do
+		while (true)
 		{
 			x = Random(2, WIDTH_GAME - 1);
 			y = Random(4, HEIGH_GAME - 1);
-		} while (isValidFood(x, y) == false); // Check if can create food
+			if (isValidFood(x, y) == true && TouchObs(x, y) == false) break;
+		}
 
 		Food[i] = { x, y }; // Random coordinates of food into array
 	}
@@ -399,8 +420,8 @@ void GenerateCenterGate()
 		|| CenterGate(x - 2, y - 2) == false || CenterGate(x, y - 2) == false && CenterGate(x + 2, y - 2) == false
 		|| CenterGate(x - 2, y + 2) == false || CenterGate(x, y + 2) == false && CenterGate(x + 2, y + 2) == false);
 
-	// Check 7 * 7 matrix with center is Center Point Of Gate (avoid gate opposite the bound)
-	// It makes sure that there are no Food, Obstacles and Snake in this 5x5 matrix
+	// Check 7x7 matrix with center is Center Point Of Gate (avoid gate opposite the bound)
+	// It makes sure that there are no Food, Obstacles and Snake in this 7x7 matrix
 
 	Center = { x, y };
 }
@@ -458,12 +479,36 @@ bool TouchGate()
 	for (int i = 0; i < cntGate; i++)
 	{
 		if (Gate[i].x == Center.x && Gate[i].y == Center.y)
-			continue;
-
-		for (int j = 0; j < Snake_Size; j++)
 		{
-			if (Snake[j].x == Gate[i].x && Snake[j].y == Gate[i].y)
-				return true;
+			if (Snake[0].x == Gate[i].x && Snake[0].y == Gate[i].y)
+			{
+				// Check that snake come into Gate with right direction
+				if (TYPE == 1) // Gate type 1
+					return !(MOVING == 'S' || MOVING == 'P');
+
+				if (TYPE == 2) // Gate type 2
+					return !(MOVING == 'W' || MOVING == 'H');
+
+				if (TYPE == 3) // Gate type 3
+					return !(MOVING == 'A' || MOVING == 'K');
+
+				if (TYPE == 4) // Gate type 4
+					return !(MOVING == 'D' || MOVING == 'M');
+			}
+
+			for (int j = 1; j < Snake_Size; j++)
+			{
+				if (Snake[j].x == Gate[i].x && Snake[j].y == Gate[i].y)
+					return true;
+			}
+		}
+		else
+		{
+			for (int j = 0; j < Snake_Size; j++)
+			{
+				if (Snake[j].x == Gate[i].x && Snake[j].y == Gate[i].y)
+					return true;
+			}
 		}
 	}
 
@@ -472,7 +517,7 @@ bool TouchGate()
 
 void MoveUp()
 {
-	if (TouchWall(Snake[0].x, Snake[0].y - 1) == true || TouchObs(Snake[0].x, Snake[0].y - 1) == true) // Touch the Wall -> You lose
+	if (TouchWall(Snake[0].x, Snake[0].y - 1) == true || TouchObs(Snake[0].x, Snake[0].y - 1) == true) // Touch the Wall or Obstacle -> You lose
 	{
 		ProcessDead();
 		return;
@@ -486,7 +531,7 @@ void MoveUp()
 
 	Snake[0].y--; // Move up
 
-	if (TouchItself()) // Check conditions to make sure that snake still ALIVE
+	if (TouchItself() || TouchGate()) // Check conditions to make sure that snake still ALIVE
 	{
 		ProcessDead();
 		return;
@@ -508,7 +553,7 @@ void MoveDown()
 
 	Snake[0].y++; // Move down
 
-	if (TouchItself())
+	if (TouchItself() || TouchGate())
 	{
 		ProcessDead();
 		return;
@@ -530,7 +575,7 @@ void MoveRight()
 
 	Snake[0].x++; // Move right
 
-	if (TouchItself())
+	if (TouchItself() || TouchGate())
 	{
 		ProcessDead();
 		return;
@@ -552,7 +597,7 @@ void MoveLeft()
 
 	Snake[0].x--; // Move left
 
-	if (TouchItself())
+	if (TouchItself() || TouchGate())
 	{
 		ProcessDead();
 		return;

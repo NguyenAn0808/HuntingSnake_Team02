@@ -13,7 +13,7 @@
 using namespace std;
 
 // CONSTANTS
-const int MAX_SIZE_FOOD = 4;
+const int MAX_SIZE_FOOD = 2;
 const int MAX_SIZE_SNAKE = 30;
 const int MAX_SPEED = 5;
 const int MAX_SIZE_OBS = 10;
@@ -33,6 +33,9 @@ struct Point
 
 void StartGame(void);// Function StartGame
 void LoadGame(void);// Function LoadGame (movement of snake using keyboard)
+void PauseGame(HANDLE t);
+void ExitGame(HANDLE t);
+
 void LoadMap(void);
 
 void ProcessDead(void);// Function handle when snake DEAD
@@ -50,7 +53,7 @@ void DrawGateU4(int x, int y, const string& st); // Functio Draw Gate Type 4
 
 void ProcessGate(void); // Function Process Gate
 void EraseGate(); //Function Erase Gate
-void EraseOldPosition(void); //Function Erase Old Snake (Old coordinates)
+void EraseOldSnake(void); //Function Erase Old Snake (Old coordinates)
 
 bool isValidFood(int x, int y);// Function check if can create food
 void GenerateFood(void); // Function Generate Food
