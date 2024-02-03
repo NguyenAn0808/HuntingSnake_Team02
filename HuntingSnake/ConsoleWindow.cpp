@@ -173,7 +173,7 @@ void mainMenu() {
             y_prev = y_pointer;
 
             // hightlight the current button
-            highlightedBox(true, x_pointer, y_pointer, rec_height, rec_width, BG_COLOR, 6);
+            highlightedBox(true, x_pointer, y_pointer, rec_height, rec_width, BG_COLOR, 5);
 
             // set to false to mark that now there's no button pressed
             check = false;
@@ -196,8 +196,6 @@ void mainMenu() {
                 // if pointer is out of range => set the pointer to the first position
                 if (y_pointer > y_menu * 4) y_pointer = y_menu;
                 GotoXY(x_pointer, y_pointer);
-
-                highlightedBox(true, x_pointer, y_pointer, rec_height, rec_width, 5, 5);
                 break;
             case 'W': case 'H': // if user pressed W or 'Arrow Up'
                 // move pointer up to the next button
@@ -206,7 +204,6 @@ void mainMenu() {
                 if (y_pointer < y_menu) y_pointer = y_menu * 4;
                 GotoXY(x_pointer, y_pointer);
 
-                highlightedBox(true, x_pointer, y_pointer, rec_height, rec_width, 5, 5);
                 break;
             case 13: // if user pressed 'Enter'
                 if (y_pointer / y_menu == 1) { // if user press button 1 (Start Game)
