@@ -40,6 +40,7 @@ void LoadConsole()
     //setScreenBufferSize(120, 49);
 
     //set console maximize
+    LockConsolePosition();
     MaximizeConsoleWindow();
 
     DisableResizeWindow();
@@ -139,10 +140,9 @@ void mainMenu() {
     LoadConsole();
     // turn off cursor blinking
     ShowConsoleCursor(false);
-
     // define position of the menu and size of each button
     unsigned int x_menu = (getTermSize().x - 20)/2,
-        y_menu = 5,
+        y_menu = (getTermSize().y - 20) / 2,
         rec_width = 20,
         rec_height = 4;
 
@@ -196,14 +196,14 @@ void mainMenu() {
                 // move pointer down to the next button
                 y_pointer += 5;
                 // if pointer is out of range => set the pointer to the first position
-                if (y_pointer > y_menu * 4) y_pointer = y_menu;
+                if (y_pointer > y_menu + 15) y_pointer = y_menu;
                 GotoXY(x_pointer, y_pointer);
                 break;
             case 'W': case 'H': // if user pressed W or 'Arrow Up'
                 // move pointer up to the next button
                 y_pointer -= 5;
                 // if pointer is out of range => set the pointer to the last button
-                if (y_pointer < y_menu) y_pointer = y_menu * 4;
+                if (y_pointer < y_menu) y_pointer = y_menu + 15;
                 GotoXY(x_pointer, y_pointer);
 
                 break;
