@@ -56,13 +56,13 @@ void draw_rectangle(unsigned int x_pos, unsigned int y_pos, unsigned int height,
 
 }
 
-void setBackgroundColor(int bg_color, int txt_color)
+void setBackgroundColor(int bg_color)
 {
 	text_color(bg_color, bg_color); // set the color
 	// print all the terminal with selected color
 	for (int i = 0; i <= getTermSize().x; ++i) {
 		for (int j = 0; j <= getTermSize().y; ++j) {
-			std::cout << char(219);
+			std::cout << (char)219;
 		}
 	}
 	text_color(0, 7); //set to default
