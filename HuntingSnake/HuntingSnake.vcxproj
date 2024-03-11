@@ -127,6 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="arts.cpp" />
     <ClCompile Include="ConsoleWindow.cpp" />
     <ClCompile Include="GameMatch.cpp" />
     <ClCompile Include="GenerateMap.cpp" />
@@ -135,11 +136,16 @@
     <ClCompile Include="Snake.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="arts.h" />
     <ClInclude Include="ConsoleWindow.h" />
     <ClInclude Include="GameMatch.h" />
     <ClInclude Include="GenerateMap.h" />
     <ClInclude Include="graphics.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="Snake.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="HuntingSnake.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

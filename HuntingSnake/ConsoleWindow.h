@@ -4,9 +4,12 @@
 #include <conio.h>
 #include "Snake.h"
 #include "graphics.h"
+
 // macro for console background color & text color
-#define BG_COLOR 1
-#define TXT_COLOR 7
+#define BG_COLOR colorCode::LIGHT_CYAN
+#define TXT_COLOR colorCode::LIGHT_YELLOW
+const long nScreenWidth = ::GetSystemMetrics(SM_CXSCREEN);
+const long nScreenHeight = ::GetSystemMetrics(SM_CYSCREEN);
 
 struct axis //store terminal's axis
 {
@@ -23,7 +26,8 @@ void GotoXY(int x, int y);
 void LoadConsole();
 void DisableResizeWindow();
 void DisableCtrButton(bool Close, bool Min, bool Max);
-void ShowScrollbar(BOOL Show);
+BOOL SetConsoleSize(int cols, int rows);
+void DisableScrollbar();
 void SetConsolePosition(int x, int y);
 void LockConsolePosition();
 void MaximizeConsoleWindow();
